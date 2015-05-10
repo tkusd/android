@@ -1,4 +1,4 @@
-package com.melon.android;
+package tw.tkusd.appstudio;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
