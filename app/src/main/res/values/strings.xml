@@ -4,4 +4,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="ID">ID</string>
+    <string name="Account">(Account)</string>
+    <string name="login">login</string>
+    <string name="Password">(Password)</string>
+
 </resources>
