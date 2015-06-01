@@ -97,8 +97,10 @@ public class MainActivity extends AppCompatActivity {
            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, Constant.POST_URL, obj, new Response.Listener<JSONObject>() {
                @Override
                public void onResponse(JSONObject response) {
-                   mText.setText(response.toString());// 回傳值
+                   //mText.setText(response.toString());// 回傳值
                    hidepDialog();
+                   mText.setText("註冊成功");
+
                }
            }, new Response.ErrorListener() {
                @Override
@@ -112,8 +114,9 @@ public class MainActivity extends AppCompatActivity {
                        } catch (JSONException e) {
                            e.printStackTrace();
                        }
-                       hidepDialog();
+
                    }
+                   hidepDialog();
                }
            });
 
