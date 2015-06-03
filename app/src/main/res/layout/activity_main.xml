@@ -1,87 +1,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
-
-    <TextView
-        android:id="@+id/tie"
-        android:text="註冊"
-        android:layout_width="54dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        style="@style/Base.TextAppearance.AppCompat.Large"
-        android:layout_gravity="center_horizontal" />
-
-      <LinearLayout
+    android:layout_height="match_parent"
+    android:padding="@dimen/margin_medium">
+    <EditText
+        android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="70sp"
-            android:layout_height="wrap_content"
-            android:text="name"
-            android:id="@+id/textView"
-            android:gravity="center_horizontal" />
-         <EditText
-           android:id="@+id/name"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-             android:gravity="center_vertical" />
-
-      </LinearLayout>
-
-       <LinearLayout
-          android:orientation="horizontal"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content">
-          <TextView
-             android:layout_width="70sp"
-             android:layout_height="wrap_content"
-             android:text="email"
-             android:id="@+id/textView2"
-              android:gravity="center_horizontal" />
-
-           <EditText
-              android:id="@+id/email"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-               android:gravity="center_vertical" />
-        </LinearLayout>
-
-       <LinearLayout
-           android:orientation="horizontal"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content">
-
-           <TextView
-               android:layout_width="70sp"
-               android:layout_height="wrap_content"
-               android:text="password"
-               android:id="@+id/txtp"
-               android:gravity="center_horizontal" />
-
-           <EditText
-              android:id="@+id/password"
-              android:layout_height="wrap_content"
-              android:layout_width="match_parent" />
-        </LinearLayout>
+        android:hint="@string/label_name"/>
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/label_email"
+        android:inputType="textEmailAddress"/>
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/label_password"
+        android:inputType="textPassword"/>
     <Button
         android:id="@+id/btn_send_request"
         android:layout_width="100sp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="post" />
-
+        android:text="@string/signup"/>
     <TextView
         android:id="@+id/Text"
-        android:layout_width="300sp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_send_request"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_horizontal"
-        android:layout_gravity="center_horizontal" />
-
-
-
+        android:layout_gravity="center_horizontal"/>
 </LinearLayout>

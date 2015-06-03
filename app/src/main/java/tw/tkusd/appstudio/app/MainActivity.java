@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getSupportActionBar().setTitle(getString(R.string.signup));
+
         mRequestHelper = RequestHelper.getInstance(this);
 
         btnSendRequest = (Button) findViewById(R.id.btn_send_request);
@@ -70,65 +72,45 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+    public void post(){
+        showpDialog();
+        JSONObject obj = new JSONObject();
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        try {
+            obj.put("name", username);
+            obj.put("email", useremail);
+            obj.put("password",userpassword);
 
-        if (id == R.id.action_settings) {
-            return true;
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, Constant.POST_URL, obj, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    //mText.setText(response.toString());// 回傳值
+                    hidepDialog();
+                    mText.setText("註冊成功");
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    mText.setText(error.toString());
+
+                    if (error.networkResponse != null) {
+                        try {
+                            JSONObject result = new JSONObject(new String(error.networkResponse.data));
+                            mText.setText(result.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    hidepDialog();
+                }
+            });
+        } catch (JSONException e){
+            e.printStackTrace();
         }
 
-        return super.onOptionsItemSelected(item);
-    }
-   public void post(){
-       showpDialog();
-       JSONObject obj = new JSONObject();
-       try {
-           obj.put("name", username);
-           obj.put("email", useremail);
-           obj.put("password",userpassword);
-
-           JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, Constant.POST_URL, obj, new Response.Listener<JSONObject>() {
-               @Override
-               public void onResponse(JSONObject response) {
-                   //mText.setText(response.toString());// 回傳值
-                   hidepDialog();
-                   mText.setText("註冊成功");
-
-               }
-           }, new Response.ErrorListener() {
-               @Override
-               public void onErrorResponse(VolleyError error) {
-                   mText.setText(error.toString());
-
-                   if (error.networkResponse != null) {
-                       try {
-                           JSONObject result = new JSONObject(new String(error.networkResponse.data));
-                           mText.setText(result.toString());
-                       } catch (JSONException e) {
-                           e.printStackTrace();
-                       }
-
-                   }
-                   hidepDialog();
-               }
-           });
-
-           mRequestHelper.addToRequestQueue(req, TAG);
-       } catch (JSONException e) {
-           e.printStackTrace();
-
-       }
-
-
    }
-    //method
+
     private void showpDialog() {
         if (!pDialog.isShowing())
             pDialog.show();

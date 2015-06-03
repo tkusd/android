@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">App Studio</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="signup">Sign up</string>
+
+    <string name="label_name">Name</string>
+    <string name="label_email">Email</string>
+    <string name="label_password">Password</string>
 </resources>
