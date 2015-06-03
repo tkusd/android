@@ -3,8 +3,6 @@ package tw.tkusd.appstudio.app;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +16,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
 import tw.tkusd.appstudio.util.RequestHelper;
@@ -25,43 +25,38 @@ import tw.tkusd.appstudio.util.RequestHelper;
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
 
-    private Button btnSendRequest;
-    private TextView mText;
+    @InjectView(R.id.btn_send_request)
+    Button btnSendRequest;
+
+    @InjectView(R.id.name)
+    EditText inputName;
+
+    @InjectView(R.id.email)
+    EditText inputEmail;
+
+    @InjectView(R.id.password)
+    EditText inputPassword;
+
+    @InjectView(R.id.result)
+    TextView textResult;
+
     private RequestHelper mRequestHelper;
     private ProgressDialog pDialog;
-    private EditText txtname, txtemail,txtpassword;
-    private String username,useremail,userpassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.inject(this);
 
         getSupportActionBar().setTitle(getString(R.string.signup));
 
         mRequestHelper = RequestHelper.getInstance(this);
 
-        btnSendRequest = (Button) findViewById(R.id.btn_send_request);
-
-        txtname = (EditText) findViewById(R.id.name);//取得ed姓名
-        txtemail=(EditText) findViewById(R.id.email);//取得ed eamil
-        txtpassword = (EditText) findViewById(R.id.password);//取得ed 密碼
-
-
-        mText = (TextView) findViewById(R.id.Text);
-        pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Please wait...");
-        pDialog.setCancelable(false);
-
         btnSendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                username = txtname.getText().toString();
-                useremail=txtemail.getText().toString();
-                userpassword = txtpassword.getText().toString();
-
                 post();
-
             }
         });
     }
@@ -73,51 +68,60 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void post(){
-        showpDialog();
+        showDialog();
         JSONObject obj = new JSONObject();
 
         try {
-            obj.put("name", username);
-            obj.put("email", useremail);
-            obj.put("password",userpassword);
+            obj.put("name", inputName.getText());
+            obj.put("email", inputEmail.getText());
+            obj.put("password", inputPassword.getText());
 
-            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, Constant.POST_URL, obj, new Response.Listener<JSONObject>() {
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, Constant.USER_URL, obj, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    //mText.setText(response.toString());// 回傳值
-                    hidepDialog();
-                    mText.setText("註冊成功");
+                    //textResult.setText(response.toString());// 回傳值
+                    hideDialog();
+                    textResult.setText("註冊成功");
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    mText.setText(error.toString());
+                    textResult.setText(error.toString());
 
                     if (error.networkResponse != null) {
                         try {
                             JSONObject result = new JSONObject(new String(error.networkResponse.data));
-                            mText.setText(result.toString());
+                            textResult.setText(result.toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
                     }
-                    hidepDialog();
+                    hideDialog();
                 }
             });
+
+            mRequestHelper.addToRequestQueue(req, TAG);
         } catch (JSONException e){
             e.printStackTrace();
         }
 
    }
 
-    private void showpDialog() {
-        if (!pDialog.isShowing())
-            pDialog.show();
+    private void showDialog() {
+        pDialog = new ProgressDialog(this);
+
+        pDialog.setMessage("Please wait...");
+        pDialog.setCancelable(false);
+        pDialog.setCanceledOnTouchOutside(false);
+
+        pDialog.show();
     }
 
-    private void hidepDialog() {
-        if (pDialog.isShowing())
+    private void hideDialog() {
+        if (pDialog != null){
             pDialog.dismiss();
+            pDialog = null;
+        }
     }
 }

@@ -14,8 +14,15 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+
+            // Library specific proguard files
+            proguardFile 'proguard-butterknife.pro'
+            proguardFile 'proguard-support-v7-appcompat.pro'
+
+            // Default proguard files
+            proguardFile 'proguard-project.pro'
+            proguardFile getDefaultProguardFile('proguard-android.txt')
         }
     }
 }
@@ -24,4 +31,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.mcxiaoke.volley:library:1.0.15'
+    compile 'com.jakewharton:butterknife:6.1.0'
 }
