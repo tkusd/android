@@ -1,7 +1,9 @@
 package tw.tkusd.appstudio.app;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -82,6 +84,20 @@ public class MainActivity extends AppCompatActivity {
                     //textResult.setText(response.toString());// 回傳值
                     hideDialog();
                     textResult.setText("註冊成功");
+                    //跳轉畫面
+                    showDialog();  //
+                    Handler mHand=new Handler();
+                    mHand.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent intent = new Intent(MainActivity.this, Goto.class);
+                            hideDialog();//
+                            startActivity(intent);
+                        }
+                    }, 3000);//停留3秒
+
+                    //跳轉end
+
                 }
             }, new Response.ErrorListener() {
                 @Override
