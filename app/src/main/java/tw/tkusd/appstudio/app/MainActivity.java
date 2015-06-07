@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+
     public void post(){
         showDialog();
         JSONObject obj = new JSONObject();
@@ -83,7 +85,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(JSONObject response) {
                     //textResult.setText(response.toString());// 回傳值
                     hideDialog();
-                    textResult.setText("註冊成功");
+                    Toast.makeText(MainActivity.this,"註冊成功",Toast.LENGTH_SHORT).show();
+
                     //跳轉畫面
                     showDialog();  //
                     Handler mHand=new Handler();
@@ -102,17 +105,17 @@ public class MainActivity extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    textResult.setText(error.toString());
-
-                    if (error.networkResponse != null) {
+                   if (error.networkResponse != null) {
                         try {
                             JSONObject result = new JSONObject(new String(error.networkResponse.data));
-                            textResult.setText(result.toString());
+                            Toast.makeText(MainActivity.this,result.toString(),Toast.LENGTH_LONG).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
+                    else {
+                       Toast.makeText(MainActivity.this,error.toString(),Toast.LENGTH_LONG).show();
+                   }
                     hideDialog();
                 }
             });
