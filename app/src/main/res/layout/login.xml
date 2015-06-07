@@ -3,11 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/margin_medium">
-    <EditText
-        android:id="@+id/name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/label_name"/>
+
     <EditText
         android:id="@+id/email"
         android:layout_width="match_parent"
@@ -25,13 +21,8 @@
         android:layout_width="100sp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/signup"/>
-    <Button
-        android:id="@+id/btn_page"
-        android:layout_width="100sp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/login" />
+        android:text="@string/login"/>
+
     <TextView
         android:id="@+id/result"
         android:layout_width="wrap_content"
