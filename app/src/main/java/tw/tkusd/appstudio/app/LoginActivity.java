@@ -25,8 +25,8 @@ import tw.tkusd.appstudio.util.RequestHelper;
 /**
  * Created by melon on 2015/6/7.
  */
-public class login extends AppCompatActivity{
-    public static final String TAG = login.class.getSimpleName();
+public class LoginActivity extends AppCompatActivity{
+    public static final String TAG = LoginActivity.class.getSimpleName();
 
     @InjectView(R.id.btn_send_request)
     Button btnSendRequest;
