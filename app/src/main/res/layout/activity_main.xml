@@ -32,6 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/login" />
+
     <TextView
         android:id="@+id/result"
         android:layout_width="wrap_content"
