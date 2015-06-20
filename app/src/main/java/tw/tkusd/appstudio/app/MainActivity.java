@@ -71,8 +71,6 @@ public class MainActivity extends AppCompatActivity {
                 Intent newAct = new Intent();
                 newAct.setClass(MainActivity.this, LoginActivity.class);
                 startActivity(newAct);
-
-
             }
         });
     }
@@ -99,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
                     //textResult.setText(response.toString());// 回傳值
                     hideDialog();
                     Toast.makeText(MainActivity.this,"註冊成功",Toast.LENGTH_SHORT).show();
-
                     //跳轉畫面
                     showDialog();
                     Intent intent = new Intent(MainActivity.this, Goto.class);
@@ -129,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e){
             e.printStackTrace();
         }
-
    }
 
     private void showDialog() {
@@ -138,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(false);
         pDialog.setCanceledOnTouchOutside(false);
-
         pDialog.show();
     }
 

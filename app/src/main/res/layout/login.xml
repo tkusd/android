@@ -18,14 +18,14 @@
         android:inputType="textPassword"/>
     <Button
         android:id="@+id/btn_send_request"
-        android:layout_width="100sp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/login"/>
 
     <Button
         android:id="@+id/btn_signup"
-        android:layout_width="100sp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/signup" />
