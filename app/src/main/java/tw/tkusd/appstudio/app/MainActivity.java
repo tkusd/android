@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -52,11 +53,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
-
-        getSupportActionBar().setTitle(getString(R.string.signup));
-
         mRequestHelper = RequestHelper.getInstance(this);
-
         btnSendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,8 +66,6 @@ public class MainActivity extends AppCompatActivity {
                 Intent newAct = new Intent();
                 newAct.setClass(MainActivity.this, LoginActivity.class);
                 startActivity(newAct);
-
-
             }
         });
     }
@@ -95,21 +90,27 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(JSONObject response) {
                     //textResult.setText(response.toString());// 回傳值
                     hideDialog();
-                    textResult.setText("註冊成功");
+                    Toast.makeText(MainActivity.this,"註冊成功",Toast.LENGTH_SHORT).show();
+                    //跳轉畫面
+                    showDialog();
+                    Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
+                    hideDialog();//
+                    startActivity(intent);
+                    //跳轉end
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    textResult.setText(error.toString());
-
                     if (error.networkResponse != null) {
                         try {
                             JSONObject result = new JSONObject(new String(error.networkResponse.data));
-                            textResult.setText(result.toString());
+                            Toast.makeText(MainActivity.this,result.toString(),Toast.LENGTH_LONG).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
+                    }
+                    else {
+                       Toast.makeText(MainActivity.this,error.toString(),Toast.LENGTH_LONG).show();
                     }
                     hideDialog();
                 }
@@ -119,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e){
             e.printStackTrace();
         }
-
    }
 
     private void showDialog() {
@@ -128,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(false);
         pDialog.setCanceledOnTouchOutside(false);
-
         pDialog.show();
     }
 

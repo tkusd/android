@@ -1,6 +1,7 @@
 package tw.tkusd.appstudio.app;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -30,6 +31,9 @@ public class LoginActivity extends AppCompatActivity{
 
     @InjectView(R.id.btn_send_request)
     Button btnSendRequest;
+    @InjectView(R.id.btn_signup)
+    Button btnsignup;
+
 
     @InjectView(R.id.email)
     EditText inputEmail;
@@ -48,18 +52,21 @@ public class LoginActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         ButterKnife.inject(this);
-
-        getSupportActionBar().setTitle(getString(R.string.login));
-
         mRequestHelper = RequestHelper.getInstance(this);
-
         btnSendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 post();
             }
         });
-
+        btnsignup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent newAct = new Intent();
+                newAct.setClass(LoginActivity.this, MainActivity.class);
+                startActivity(newAct);
+            }
+        });
     }
 
     @Override
@@ -73,10 +80,8 @@ public class LoginActivity extends AppCompatActivity{
         JSONObject obj = new JSONObject();
 
         try {
-
             obj.put("email", inputEmail.getText());
             obj.put("password", inputPassword.getText());
-
             JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, Constant.TOKEN_URL, obj, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
@@ -96,7 +101,6 @@ public class LoginActivity extends AppCompatActivity{
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
                     hideDialog();
                 }
@@ -106,16 +110,13 @@ public class LoginActivity extends AppCompatActivity{
         } catch (JSONException e){
             e.printStackTrace();
         }
-
     }
 
     private void showDialog() {
         pDialog = new ProgressDialog(this);
-
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(false);
         pDialog.setCanceledOnTouchOutside(false);
-
         pDialog.show();
     }
 
