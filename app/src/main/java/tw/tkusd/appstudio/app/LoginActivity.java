@@ -3,13 +3,11 @@ package tw.tkusd.appstudio.app;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -25,17 +23,17 @@ import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
 import tw.tkusd.appstudio.util.RequestHelper;
 
-public class MainActivity extends AppCompatActivity {
-    public static final String TAG = MainActivity.class.getSimpleName();
+/**
+ * Created by melon on 2015/6/7.
+ */
+public class LoginActivity extends AppCompatActivity{
+    public static final String TAG = LoginActivity.class.getSimpleName();
 
     @InjectView(R.id.btn_send_request)
     Button btnSendRequest;
+    @InjectView(R.id.btn_signup)
+    Button btnsignup;
 
-    @InjectView(R.id.btn_page)
-    Button btnPage;
-
-    @InjectView(R.id.name)
-    EditText inputName;
 
     @InjectView(R.id.email)
     EditText inputEmail;
@@ -52,10 +50,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.login);
         ButterKnife.inject(this);
 
-        getSupportActionBar().setTitle(getString(R.string.signup));
+        getSupportActionBar().setTitle(getString(R.string.login));
 
         mRequestHelper = RequestHelper.getInstance(this);
 
@@ -65,16 +63,18 @@ public class MainActivity extends AppCompatActivity {
                 post();
             }
         });
-        btnPage.setOnClickListener(new View.OnClickListener() {
+
+        btnsignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent newAct = new Intent();
-                newAct.setClass(MainActivity.this, LoginActivity.class);
+                newAct.setClass(LoginActivity.this, MainActivity.class);
                 startActivity(newAct);
 
 
             }
         });
+
     }
 
     @Override
@@ -83,44 +83,36 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-
     public void post(){
         showDialog();
         JSONObject obj = new JSONObject();
 
         try {
-            obj.put("name", inputName.getText());
+
             obj.put("email", inputEmail.getText());
             obj.put("password", inputPassword.getText());
 
-            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, Constant.USER_URL, obj, new Response.Listener<JSONObject>() {
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, Constant.TOKEN_URL, obj, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    //textResult.setText(response.toString());// 回傳值
+                    //textResult.setText(response.toString());
                     hideDialog();
-                    Toast.makeText(MainActivity.this,"註冊成功",Toast.LENGTH_SHORT).show();
-
-                    //跳轉畫面
-                    showDialog();
-                    Intent intent = new Intent(MainActivity.this, Goto.class);
-                    hideDialog();//
-                    startActivity(intent);
-                    //跳轉end
+                    textResult.setText("log success");
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                   if (error.networkResponse != null) {
+                    textResult.setText(error.toString());
+
+                    if (error.networkResponse != null) {
                         try {
                             JSONObject result = new JSONObject(new String(error.networkResponse.data));
-                            Toast.makeText(MainActivity.this,result.toString(),Toast.LENGTH_LONG).show();
+                            textResult.setText(result.toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
                     }
-                    else {
-                       Toast.makeText(MainActivity.this,error.toString(),Toast.LENGTH_LONG).show();
-                   }
                     hideDialog();
                 }
             });
@@ -130,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-   }
+    }
 
     private void showDialog() {
         pDialog = new ProgressDialog(this);
