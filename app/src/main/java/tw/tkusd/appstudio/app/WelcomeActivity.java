@@ -1,18 +1,18 @@
 package tw.tkusd.appstudio.app;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import tw.tkusd.appstudio.R;
 
-public class Goto extends ActionBarActivity {
+public class WelcomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_goto);
+        setContentView(R.layout.activity_welcome);
     }
 
     @Override

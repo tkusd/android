@@ -3,7 +3,6 @@ package tw.tkusd.appstudio.app;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -54,11 +53,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
-
-        getSupportActionBar().setTitle(getString(R.string.signup));
-
         mRequestHelper = RequestHelper.getInstance(this);
-
         btnSendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-
     public void post(){
         showDialog();
         JSONObject obj = new JSONObject();
@@ -99,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this,"註冊成功",Toast.LENGTH_SHORT).show();
                     //跳轉畫面
                     showDialog();
-                    Intent intent = new Intent(MainActivity.this, Goto.class);
+                    Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
                     hideDialog();//
                     startActivity(intent);
                     //跳轉end
@@ -107,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                   if (error.networkResponse != null) {
+                    if (error.networkResponse != null) {
                         try {
                             JSONObject result = new JSONObject(new String(error.networkResponse.data));
                             Toast.makeText(MainActivity.this,result.toString(),Toast.LENGTH_LONG).show();
@@ -117,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     else {
                        Toast.makeText(MainActivity.this,error.toString(),Toast.LENGTH_LONG).show();
-                   }
+                    }
                     hideDialog();
                 }
             });
