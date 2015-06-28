@@ -111,10 +111,10 @@ public class MainActivity extends AppCompatActivity {
                                 inputEmail.setError("email is required");
                             }
 
-                            String test = result.getString("message");
-                            if(test.equals("Email has been used.")){
+                            String test = result.getString("error");
+                            if(test.equals("1301")){
                                 inputEmail.setError("eamil has been used");
-                            }else if(test.equals(("Email is invalid."))){
+                            }else if(test.equals(("1104"))){
                                 inputEmail.setError("invalid email");
                             }
 
