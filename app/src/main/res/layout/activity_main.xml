@@ -1,37 +1,58 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent">
+
+<LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:padding="@dimen/margin_medium">
-    <EditText
-        android:id="@+id/name"
+
+    <com.wrapp.floatlabelededittext.FloatLabeledEditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/label_name"/>
+        android:layout_height="wrap_content">
+
     <EditText
-        android:id="@+id/email"
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/label_name"/>
+
+    </com.wrapp.floatlabelededittext.FloatLabeledEditText>
+
+    <com.wrapp.floatlabelededittext.FloatLabeledEditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/label_email"
-        android:inputType="textEmailAddress"/>
-    <EditText
-        android:id="@+id/password"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/label_email"
+            android:inputType="textEmailAddress"/>
+
+    </com.wrapp.floatlabelededittext.FloatLabeledEditText>
+
+    <com.wrapp.floatlabelededittext.FloatLabeledEditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/label_password"
-        android:inputType="textPassword"/>
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/label_password"
+            android:inputType="textPassword"/>
+
+    </com.wrapp.floatlabelededittext.FloatLabeledEditText>
+
     <Button
         android:id="@+id/btn_send_request"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/signup"/>
-    <Button
-        android:id="@+id/btn_page"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/login" />
 
     <TextView
         android:id="@+id/result"
@@ -39,3 +60,4 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"/>
 </LinearLayout>
+</ScrollView>
