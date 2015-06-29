@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
     //  沒網路時產生的dialog
     private void nonetdialog(){
         AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-        alertDialog.setTitle("登入失敗");
+        alertDialog.setTitle("註冊失敗");
         alertDialog.setMessage("無網路連接");
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                 new DialogInterface.OnClickListener() {
