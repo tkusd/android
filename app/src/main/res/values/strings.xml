@@ -16,4 +16,13 @@
     <string name="記住我">Remember</string>
     <string name="logout">logout</string>
 
+    <string name="oppendrawer">"Open"</string>
+    <string name="closedrawer">"Close"</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="homefrag">this is homepage</string>
+    <string name="frag1">this is setting page</string>
+    <string name="frag2">frag 2</string>
+    <string name="frag3">frag 3</string>
 </resources>
