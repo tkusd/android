@@ -1,78 +1,76 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:float="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:fillViewport="true">
 
-<LinearLayout
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="15dp"
-    android:paddingRight="15dp"
-    android:paddingTop="30dp"
-    android:background="#ffffff">
-
-    <com.wrapp.floatlabelededittext.FloatLabeledEditText
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="170dp"
+        android:background="@color/mainbackground">
 
-    <EditText
-            android:id="@+id/name"
+        <com.wrapp.floatlabelededittext.FloatLabeledEditText
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@drawable/edit"
-            android:paddingLeft="10dp"
-            android:hint="@string/label_name"/>
+            android:layout_height="wrap_content"
+            float:fletPaddingBottom="10dp"
+            float:fletTextAppearance="@style/floatlabelededittext">
 
-    </com.wrapp.floatlabelededittext.FloatLabeledEditText>
+            <EditText
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="@string/label_name"
+                android:textColorHint="@color/edittext" />
+        </com.wrapp.floatlabelededittext.FloatLabeledEditText>
 
-    <com.wrapp.floatlabelededittext.FloatLabeledEditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp">
-
-        <EditText
-            android:id="@+id/email"
+        <com.wrapp.floatlabelededittext.FloatLabeledEditText
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@drawable/edit"
-            android:paddingLeft="10dp"
-            android:hint="@string/label_email"
-            android:inputType="textEmailAddress" />
+            android:layout_height="wrap_content"
+            float:fletTextAppearance="@style/floatlabelededittext">
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="@string/label_email"
+                android:inputType="textEmailAddress"
+                android:textColorHint="@color/edittext" />
+        </com.wrapp.floatlabelededittext.FloatLabeledEditText>
 
-    </com.wrapp.floatlabelededittext.FloatLabeledEditText>
-
-    <com.wrapp.floatlabelededittext.FloatLabeledEditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp">
-
-        <EditText
-            android:id="@+id/password"
+        <com.wrapp.floatlabelededittext.FloatLabeledEditText
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@drawable/edit"
-            android:paddingLeft="10dp"
-            android:hint="@string/label_password"
-            android:inputType="textPassword" />
+            android:layout_height="wrap_content"
 
-    </com.wrapp.floatlabelededittext.FloatLabeledEditText>
+            float:fletTextAppearance="@style/floatlabelededittext">
 
-    <Button
-        android:id="@+id/btn_send_request"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_gravity="center"
-        android:background="#477519"
-        android:text="@string/signup"
-        android:textColor="#ffffff" />
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="@string/label_password"
+                android:inputType="textPassword"
+                android:textColorHint="@color/edittext" />
+        </com.wrapp.floatlabelededittext.FloatLabeledEditText>
+        <Button
+            android:id="@+id/btn_send_request"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center"
+            android:background="@color/primary"
+            android:text="@string/signup"
+            android:textColor="#ffffff" />
 
-    <TextView
-        android:id="@+id/result"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"/>
-</LinearLayout>
+        <TextView
+            android:id="@+id/result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="#ffffff"
+            android:background="@color/primary_dark"/>
+    </LinearLayout>
 </ScrollView>

@@ -1,5 +1,5 @@
 <resources>
-  <color name="primary">#9C27B0</color>
+  <color name="primary">#00B28F</color>
   <color name="primary_dark">#7B1FA2</color>
   <color name="primary_light">#E1BEE7</color>
   <color name="accent">#FFC107</color>
@@ -7,4 +7,7 @@
   <color name="secondary_text">#727272</color>
   <color name="icons">#FFFFFF</color>
   <color name="divider">#B6B6B6</color>
+  <color name="mainbackground">#00E6B8</color>
+  <color name="edittext">#006652</color>
+
 </resources>
