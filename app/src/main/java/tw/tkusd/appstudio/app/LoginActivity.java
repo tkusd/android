@@ -24,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -117,7 +118,7 @@ public class LoginActivity extends AppCompatActivity{
                             test = settingsActivity.getString("test", "");
                             textResult.setText(test);
                             SharedPreferences.Editor editor=settingsActivity.edit();
-                            editor.putString("test",response.getString("user_id"));
+                            editor.putString("test",response.getString("id"));
                             editor.commit();
 
                         } catch (JSONException e) {
@@ -145,15 +146,15 @@ public class LoginActivity extends AppCompatActivity{
                     hideDialog();
                 }
             }){
+                @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String>  params = new HashMap<String, String>();
-                    params.put("email", inputEmail.getText().toString());
-                    params.put("password", inputPassword.getText().toString());
-//                        params.put("User-Agent", );
-//                        params.put("Accept-Language", "fr");
-
-                    return params;
+                    Map<String, String> headers = new HashMap<String, String>();
+                    String auth = "Bearer " +test;
+                    headers.put("Authorization", auth);
+                    return headers;
                 }
+
+
             };
 
             mRequestHelper.addToRequestQueue(req, TAG);
