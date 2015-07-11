@@ -126,6 +126,14 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
 
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(navList)) {
+            drawerLayout.closeDrawer(navList);
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     @Override
     public void onItemClick(AdapterView<?>patent,View view,int position,long id){
