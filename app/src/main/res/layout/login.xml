@@ -2,37 +2,52 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/margin_medium">
+    android:padding="@dimen/margin_medium"
+    android:baselineAligned="true">
 
     <EditText
         android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/label_email"
-        android:inputType="textEmailAddress"/>
+        android:inputType="textEmailAddress"
+        android:layout_margin="16dp"/>
     <EditText
         android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/label_password"
-        android:inputType="textPassword"/>
+        android:inputType="textPassword"
+        android:layout_margin="16dp"/>
     <Button
         android:id="@+id/btn_send_request"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/login"/>
+        android:text="@string/login" />
 
     <Button
         android:id="@+id/btn_signup"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/signup" />
+        android:text="@string/signup"
+        android:background="@color/primary"/>
+
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+    <CheckBox
+        android:id="@+id/login_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/記住我"
+        android:layout_gravity="center"/>
+
 
     <TextView
         android:id="@+id/result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"/>
+
 </LinearLayout>

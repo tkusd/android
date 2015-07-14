@@ -107,15 +107,14 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             //測email
-                            if (inputEmail.getText().length()==0 ) {
-                                inputEmail.setError("email is required");
+                            final String putemail = inputEmail.getText().toString();
+                            if(!isValidEmail(putemail)){
+                                  inputEmail.setError("invalid email");
                             }
 
                             String test = result.getString("error");
-                            if(test.equals("1301")){
+                            if(test.equals("1301")) {
                                 inputEmail.setError("eamil has been used");
-                            }else if(test.equals(("1104"))){
-                                inputEmail.setError("invalid email");
                             }
 
                             //測password
@@ -155,10 +154,15 @@ public class MainActivity extends AppCompatActivity {
                 });
         alertDialog.show();
     }
+    //valid email
+    public static boolean isValidEmail(String email) {
+       if (email == null)
+           return false;
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
 
     private void showDialog() {
         pDialog = new ProgressDialog(this);
-
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(false);
         pDialog.setCanceledOnTouchOutside(false);

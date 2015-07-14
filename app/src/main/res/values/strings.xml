@@ -13,6 +13,11 @@
     <string name="action_settings">Settings</string>
 
     <string name="login">login</string>
+ HEAD
     <string name="title_activity_project_list">ProjectListActivity</string>
+=======
+    <string name="記住我">Remember</string>
+    <string name="logout">logout</string>
+>>>>>>> 15535978ca93032d5eb57456d7a4f559f81e593e
 
 </resources>
