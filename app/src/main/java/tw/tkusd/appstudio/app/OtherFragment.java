@@ -1,20 +1,18 @@
 package tw.tkusd.appstudio.app;
 
 
-import android.app.Activity;
 import android.os.Bundle;
-
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.app.Fragment;
 
 import tw.tkusd.appstudio.R;
 
-public class HomeFragment extends Fragment {
+public class OtherFragment extends Fragment {
 
 
-    public HomeFragment() {
+    public OtherFragment() {
         // Required empty public constructor
     }
 
@@ -22,9 +20,9 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_other, container, false);
 
         return rootView;
     }
-
 }
+

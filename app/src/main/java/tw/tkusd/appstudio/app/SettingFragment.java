@@ -6,14 +6,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
+
 import tw.tkusd.appstudio.R;
 
 
-public class Fragment2 extends Fragment {
+public class SettingFragment extends Fragment {
 
 
-    public Fragment2() {
+    public SettingFragment() {
         // Required empty public constructor
     }
 
@@ -28,7 +29,7 @@ public class Fragment2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_fragment2, container, false);
+        return inflater.inflate(R.layout.fragment_setting, container, false);
     }
     //new--------------------------
     @Override
@@ -48,4 +49,3 @@ public class Fragment2 extends Fragment {
     }
 
 }
-

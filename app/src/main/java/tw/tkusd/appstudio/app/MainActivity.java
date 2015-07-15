@@ -112,8 +112,8 @@ public class MainActivity extends AppCompatActivity {
                                   inputEmail.setError("invalid email");
                             }
 
-                            String test = result.getString("error");
-                            if(test.equals("1301")) {
+                            String geterror = result.getString("error");
+                            if(geterror.equals("1301")) {
                                 inputEmail.setError("eamil has been used");
                             }
 

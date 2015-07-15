@@ -3,20 +3,20 @@ package tw.tkusd.appstudio.app;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.app.Fragment;
 import tw.tkusd.appstudio.R;
 
 
-public class Fragment3 extends Fragment {
+public class HelpFragment extends Fragment {
 
 
-    public Fragment3() {
+    public HelpFragment() {
         // Required empty public constructor
     }
+
 
     //NEW-------------
     @Override
@@ -28,7 +28,7 @@ public class Fragment3 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_fragment3, container, false);
+        return inflater.inflate(R.layout.fragment_help, container, false);
     }
     //new--------------------------
     @Override
@@ -46,5 +46,6 @@ public class Fragment3 extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
+
 }
 
