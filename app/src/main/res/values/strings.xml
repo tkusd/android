@@ -25,6 +25,7 @@
         <item >Home</item>
         <item >Setting</item>
         <item >Help</item>
+        <item >Logout</item>
     </string-array>
 
     <!-- icon -->
@@ -32,6 +33,7 @@
         <item>@drawable/home</item>
         <item>@drawable/setting</item>
         <item>@drawable/help</item>
+        <item>@drawable/logout</item>
     </array>
 
     <!-- Content Description -->

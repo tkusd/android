@@ -4,8 +4,13 @@ package tw.tkusd.appstudio.app;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -20,8 +25,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
+import tw.tkusd.appstudio.util.RequestHelper;
 
 public class WelcomeActivity extends Activity {
 
@@ -38,13 +54,18 @@ public class WelcomeActivity extends Activity {
     private String[] navMenuTitles;
     private TypedArray navMenuIcons;
 
+    private RequestHelper mRequestHelper;
+
     private ArrayList<NavDrawerItem> navDrawerItems;
     private NavDrawerListAdapter adapter;
+    String taketoken_id;
+    public static final String TAG = WelcomeActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+        mRequestHelper = RequestHelper.getInstance(this);
 
         mTitle = mDrawerTitle = getTitle();
         navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
@@ -63,6 +84,8 @@ public class WelcomeActivity extends Activity {
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
         // help
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
+        //logout
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1)));
 
         navMenuIcons.recycle();
 
@@ -159,6 +182,15 @@ public class WelcomeActivity extends Activity {
             case 3:
                 fragment = new HelpFragment();
                 break;
+            case 4:
+                try {
+                    loadP();
+                    //do logout
+                    delete();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
 
             default:
                 break;
@@ -209,5 +241,62 @@ public class WelcomeActivity extends Activity {
             super.onBackPressed();
         }
     }
+
+    //-------logout method---------------------
+    public void delete() throws JSONException {
+        CustomReq jsonObjectRequest = new CustomReq(
+                Request.Method.DELETE,
+                Constant.TOKEN_URL+"/"+taketoken_id,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        removeP();
+                        if(taketoken_id=="") {
+                            Toast.makeText(WelcomeActivity.this, "logout success", Toast.LENGTH_SHORT).show();
+                            Intent newAct = new Intent();
+                            newAct.setClass(WelcomeActivity.this, LoginActivity.class);
+                            startActivity(newAct);
+                            finish();
+
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null) {
+                            try {
+                                JSONObject result = new JSONObject(new String(error.networkResponse.data));
+                                Toast.makeText(WelcomeActivity.this,result.toString(), Toast.LENGTH_SHORT).show();
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }else{
+                            Toast.makeText(WelcomeActivity.this,"no network conntecion", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }) {
+        };
+         Volley.newRequestQueue(getApplicationContext(), new OkHttpStack()).add(jsonObjectRequest);
+    }
+    public void loadP() {
+        int mode = Activity.MODE_PRIVATE;
+        SharedPreferences mySharedPreference = getSharedPreferences(LoginActivity.MYPREFS, mode);
+        taketoken_id = mySharedPreference.getString("tokenid", "null");
+    }
+
+    public void removeP() {
+        SharedPreferences settings =getSharedPreferences(LoginActivity.MYPREFS, MODE_PRIVATE);
+        settings.edit().remove("tokenid").commit();
+        taketoken_id=settings.getString("tokenid","");
+
+    }
+
+
+
+
+
 
 }
