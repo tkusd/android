@@ -1,5 +1,6 @@
 package tw.tkusd.appstudio.app;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,8 +10,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -20,6 +23,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -31,11 +36,15 @@ public class WelcomeActivity extends AppCompatActivity {
 
     @InjectView(R.id.btn_logout)
     Button btnlogout;
+    @InjectView(R.id.txtResult)
+    TextView txtResult;
 
-//    JSONObject obj = new JSONObject();
+
     private RequestHelper mRequestHelper;
     private ProgressDialog pDialog;
     public static final String TAG = WelcomeActivity.class.getSimpleName();
+    String taketoken_id;
+    String ID_URL=Constant.TOKEN_URL+"/"+taketoken_id;
 
 
 
@@ -49,26 +58,60 @@ public class WelcomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    post();
+                    getHeaders();
+                    loadPreference();
+                    delete();
+                    removePreference();
+                    if (taketoken_id == "") {
+                        txtResult.setText("success");
+
+                        Intent newAct = new Intent();
+                        newAct.setClass(WelcomeActivity.this, LoginActivity.class);
+                        startActivity(newAct);
+                    } else {
+                        txtResult.setText("delete failed");
+                    }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
+                } catch (AuthFailureError authFailureError) {
+                    authFailureError.printStackTrace();
                 }
             }
         });
     }
 
-    private void post() throws JSONException {
+    public void loadPreference() {
+        int mode = Activity.MODE_PRIVATE;
+        SharedPreferences mySharedPreference = getSharedPreferences(LoginActivity.MYPREFS, mode);
+        taketoken_id = mySharedPreference.getString("tokenid", "null");
+    }
+
+    public void removePreference() {
+        SharedPreferences settings =getSharedPreferences(LoginActivity.MYPREFS,MODE_PRIVATE);
+        settings.edit().clear().commit();
+        taketoken_id=settings.getString("tokenid","");
+
+    }
+    public Map<String, String> getHeaders() throws AuthFailureError {
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json");
+
+        return headers;}
+
+
+
+
+    private void delete() throws JSONException, AuthFailureError {
         showDialog();
         JSONObject obj = new JSONObject();
 
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.DELETE, Constant.ID_URL, obj, new Response.Listener<JSONObject>() {
+        CustomRequest req = new CustomRequest(Request.Method.DELETE, ID_URL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 hideDialog();
                 Toast.makeText(WelcomeActivity.this, "登出成功", Toast.LENGTH_SHORT);
-                Intent newAct = new Intent();
-                newAct.setClass(WelcomeActivity.this,LoginActivity.class);
-                startActivity(newAct);
+
             }
         }, new Response.ErrorListener() {
             @Override

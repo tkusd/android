@@ -7,7 +7,8 @@
     tools:context="tw.tkusd.appstudio.app.WelcomeActivity">
 
     <TextView android:text="welcome to this page~~~" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:id="@+id/txtResult"/>
 
     <Button
         android:id="@+id/btn_logout"
@@ -16,6 +17,7 @@
         android:layout_marginTop="30dp"
         android:layout_gravity="center"
         android:text="@string/logout"
+        android:textSize="10pt"
          />
 
 </RelativeLayout>

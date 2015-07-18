@@ -2,6 +2,7 @@ package tw.tkusd.appstudio.app;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,9 +17,11 @@ import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,13 +41,12 @@ import tw.tkusd.appstudio.util.RequestHelper;
  * Created by melon on 2015/6/7.
  */
 public class LoginActivity extends AppCompatActivity{
-    public static final String TAG = LoginActivity.class.getSimpleName();
-    public static String test;
 
     @InjectView(R.id.btn_send_request)
     Button btnSendRequest;
-    @InjectView(R.id.btn_signup)
-    Button btnsignup;
+
+    @InjectView(R.id.txtsignup)
+    TextView txtsignup;
 
     @InjectView(R.id.login_check)
     CheckBox login_check;
@@ -60,31 +62,36 @@ public class LoginActivity extends AppCompatActivity{
 
     private RequestHelper mRequestHelper;
     private ProgressDialog pDialog;
-    SharedPreferences settingsActivity;
+    public static final String TAG = LoginActivity.class.getSimpleName();
+    public static final String MYPREFS="MyCustomSharedPreferences";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         ButterKnife.inject(this);
-        settingsActivity=getSharedPreferences("MyCustomSharedPreferences", 0);
-        String mystring = settingsActivity.getString("mystring", "");
-        inputEmail.setText(mystring);
         mRequestHelper = RequestHelper.getInstance(this);
 
         btnSendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                post();
+                try {
+                    post();
+                } catch (AuthFailureError authFailureError) {
+                    authFailureError.printStackTrace();
+                }
                 if (login_check.isChecked()) {
-                    SharedPreferences.Editor editor = settingsActivity.edit();
-                    editor.putString("mystring", inputEmail.getText().toString());
+                    int mode = Activity.MODE_PRIVATE;
+                    SharedPreferences mySharedPreference = getSharedPreferences(MYPREFS, mode);
+                    SharedPreferences.Editor editor = mySharedPreference.edit();
+                    editor.putBoolean("isTrue", true);
+                    editor.putString("email",inputEmail.getText().toString() );
                     editor.commit();
                 }
 
             }
         });
-        btnsignup.setOnClickListener(new View.OnClickListener() {
+        txtsignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent newAct = new Intent();
@@ -100,68 +107,79 @@ public class LoginActivity extends AppCompatActivity{
         super.onDestroy();
     }
 
-    public void post(){
+    public void post() throws AuthFailureError {
         showDialog();
-        JSONObject obj = new JSONObject();
+        CustomRequest req = new CustomRequest(Request.Method.POST, Constant.TOKEN_URL,null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                hideDialog();
+                textResult.setText("log success");
+                if(response!=null) {
+                    try {
+//                            token_id = settingsActivity.getString("token_id", "");
+//                            int mode = Activity.MODE_PRIVATE;
+//                            SharedPreferences mySharedPreference = getSharedPreferences(MYPREFS, mode);
+//                            SharedPreferences.Editor editor=settingsActivity.edit();
+//                            editor.putBoolean("isTrue", true);
+//                            editor.putString("token_id",response.getString("id"));
+//                            editor.commit();
+                        int mode = Activity.MODE_PRIVATE;
+                        SharedPreferences mySharedPreference = getSharedPreferences(MYPREFS, mode);
+                        SharedPreferences.Editor editor = mySharedPreference.edit();
+                        editor.putBoolean("isTrue", true);
+                        String gettokenid = response.getString("id");
+                        editor.putString("tokenid", gettokenid);
+                        editor.commit();
 
-        try {
-            obj.put("email", inputEmail.getText());
-            obj.put("password", inputPassword.getText());
-            final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, Constant.TOKEN_URL, obj, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-//                    textResult.setText(response.toString());
-                    hideDialog();
-                    textResult.setText("log success");
-                    if(response!=null) {
-                        try {
-                            test = settingsActivity.getString("test", "");
-                            textResult.setText(test);
-                            SharedPreferences.Editor editor=settingsActivity.edit();
-                            editor.putString("test",response.getString("id"));
-                            editor.commit();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                    Intent newAct = new Intent();
+                    newAct.setClass(LoginActivity.this, WelcomeActivity.class);
+                    startActivity(newAct);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                textResult.setText(error.toString());
 
-                        Intent newAct = new Intent();
-                        newAct.setClass(LoginActivity.this, WelcomeActivity.class);
-                        startActivity(newAct);
+                if (error.networkResponse != null) {
+                    try {
+                        JSONObject result = new JSONObject(new String(error.networkResponse.data));
+                        textResult.setText(result.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    textResult.setText(error.toString());
+                hideDialog();
+            }
+        }){
 
-                    if (error.networkResponse != null) {
-                        try {
-                            JSONObject result = new JSONObject(new String(error.networkResponse.data));
-                            textResult.setText(result.toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    hideDialog();
-                }
-            }){
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> headers = new HashMap<String, String>();
-                    String auth = "Bearer " +test;
-                    headers.put("Authorization", auth);
-                    return headers;
-                }
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("email", inputEmail.getText().toString());
+                params.put("password", inputPassword.getText().toString());
+                return params;
+            }
 
 
-            };
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                //headers.put("Content-Type", "application/json");
+                headers.put( "charset", "charset=utf-8");
+                return headers;
+            }
 
-            mRequestHelper.addToRequestQueue(req, TAG);
-        } catch (JSONException e){
-            e.printStackTrace();
-        }
+        };
+
+        mRequestHelper.addToRequestQueue(req, TAG);
     }
+
+
 
     private void showDialog() {
         pDialog = new ProgressDialog(this);
@@ -177,4 +195,7 @@ public class LoginActivity extends AppCompatActivity{
             pDialog = null;
         }
     }
+
+
 }
+

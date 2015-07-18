@@ -11,37 +11,40 @@
         android:layout_height="wrap_content"
         android:hint="@string/label_email"
         android:inputType="textEmailAddress"
-        android:layout_margin="16dp"/>
+        android:layout_margin="12dp"/>
     <EditText
         android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/label_password"
         android:inputType="textPassword"
-        android:layout_margin="16dp"/>
+        android:layout_margin="12dp"/>
     <Button
         android:id="@+id/btn_send_request"
-        android:layout_width="100dp"
+        android:layout_width="126dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/login" />
+        android:text="@string/login"
+        android:textSize="8pt"
+        android:layout_margin="8dp"/>
 
-    <Button
-        android:id="@+id/btn_signup"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/signup"
-        android:background="@color/primary"/>
-
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
     <CheckBox
         android:id="@+id/login_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/記住我"
-        android:layout_gravity="center"/>
+        android:text="@string/Remember"
+        android:layout_gravity="center"
+        android:textSize="8pt"
+        android:layout_margin="8dp"/>
+
+    <TextView
+        android:id="@+id/txtsignup"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/signup"
+        android:textSize="10pt"
+        android:layout_margin="8dp"/>
 
 
     <TextView
