@@ -1,6 +1,8 @@
 package tw.tkusd.appstudio.network;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -10,17 +12,24 @@ import com.android.volley.Response;
 import java.util.HashMap;
 import java.util.Map;
 
+import tw.tkusd.appstudio.Constant;
+
 public abstract class APIRequest<T> extends Request<T> {
     protected static final String PROTOCOL_CHARSET = "UTF-8";
 
     private Context mContext;
     private Response.Listener<T> mListener;
     private byte[] mBody;
+    private SharedPreferences mPref;
 
     public APIRequest(Context context, int method, String url, Response.Listener<T> listener, Response.ErrorListener errorListener) {
         super(method, url, errorListener);
         mContext = context;
         mListener = listener;
+
+        if (context != null) {
+            mPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        }
     }
 
     public APIRequest(Context context, int method, String url, byte[] body, Response.Listener<T> listener, Response.ErrorListener errorListener) {
@@ -63,6 +72,11 @@ public abstract class APIRequest<T> extends Request<T> {
         Map<String, String> headers = new HashMap<>();
 
         headers.put("Content-Type", "application/json");
+
+        if (mPref != null) {
+            String token = mPref.getString(Constant.PREF_TOKEN, "");
+            headers.put("Authorization", "Bearer " + token);
+        }
 
         return headers;
     }
