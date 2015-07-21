@@ -16,13 +16,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -89,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this,"註冊成功",Toast.LENGTH_SHORT).show();
                     //跳轉畫面
                     showDialog();
-                    Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
+                    Intent intent = new Intent(MainActivity.this, ProjectListActivity.class);
                     hideDialog();//
                     startActivity(intent);
                     //跳轉end
