@@ -26,8 +26,8 @@ import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
 import tw.tkusd.appstudio.util.RequestHelper;
 
-public class MainActivity extends AppCompatActivity {
-    public static final String TAG = MainActivity.class.getSimpleName();
+public class SignupActivity extends AppCompatActivity {
+    public static final String TAG = SignupActivity.class.getSimpleName();
 
     @InjectView(R.id.btn_send_request)
     Button btnSendRequest;
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_signup);
         ButterKnife.inject(this);
         mRequestHelper = RequestHelper.getInstance(this);
         btnSendRequest.setOnClickListener(new View.OnClickListener() {
@@ -82,10 +82,10 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(JSONObject response) {
                     //textResult.setText(response.toString());// 回傳值
                     hideDialog();
-                    Toast.makeText(MainActivity.this,"註冊成功",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignupActivity.this,"註冊成功",Toast.LENGTH_SHORT).show();
                     //跳轉畫面
                     showDialog();
-                    Intent intent = new Intent(MainActivity.this, ProjectListActivity.class);
+                    Intent intent = new Intent(SignupActivity.this, ProjectListActivity.class);
                     hideDialog();//
                     startActivity(intent);
                     //跳轉end
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
 
     //  沒網路時產生的dialog
     private void nonetdialog(){
-        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+        AlertDialog alertDialog = new AlertDialog.Builder(SignupActivity.this).create();
         alertDialog.setTitle("註冊失敗");
         alertDialog.setMessage("無網路連接");
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",

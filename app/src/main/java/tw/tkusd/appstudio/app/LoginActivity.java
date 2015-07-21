@@ -2,25 +2,26 @@ package tw.tkusd.appstudio.app;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
+import tw.tkusd.appstudio.network.APIObjectRequest;
 import tw.tkusd.appstudio.util.RequestHelper;
 
 /**
@@ -28,12 +29,6 @@ import tw.tkusd.appstudio.util.RequestHelper;
  */
 public class LoginActivity extends AppCompatActivity{
     public static final String TAG = LoginActivity.class.getSimpleName();
-
-    @InjectView(R.id.btn_send_request)
-    Button btnSendRequest;
-    @InjectView(R.id.btn_signup)
-    Button btnsignup;
-
 
     @InjectView(R.id.email)
     EditText inputEmail;
@@ -46,70 +41,22 @@ public class LoginActivity extends AppCompatActivity{
 
     private RequestHelper mRequestHelper;
     private ProgressDialog pDialog;
+    private SharedPreferences mPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);
+        setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
+
         mRequestHelper = RequestHelper.getInstance(this);
-        btnSendRequest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                post();
-            }
-        });
-        btnsignup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent newAct = new Intent();
-                newAct.setClass(LoginActivity.this, MainActivity.class);
-                startActivity(newAct);
-            }
-        });
+        mPref = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     @Override
     protected void onDestroy() {
         mRequestHelper.cancelAllRequests(TAG);
         super.onDestroy();
-    }
-
-    public void post(){
-        showDialog();
-        JSONObject obj = new JSONObject();
-
-        try {
-            obj.put("email", inputEmail.getText());
-            obj.put("password", inputPassword.getText());
-            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, Constant.TOKEN_URL, obj, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    //textResult.setText(response.toString());
-                    hideDialog();
-                    textResult.setText("log success");
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    textResult.setText(error.toString());
-
-                    if (error.networkResponse != null) {
-                        try {
-                            JSONObject result = new JSONObject(new String(error.networkResponse.data));
-                            textResult.setText(result.toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    hideDialog();
-                }
-            });
-
-            mRequestHelper.addToRequestQueue(req, TAG);
-        } catch (JSONException e){
-            e.printStackTrace();
-        }
     }
 
     private void showDialog() {
@@ -125,5 +72,53 @@ public class LoginActivity extends AppCompatActivity{
             pDialog.dismiss();
             pDialog = null;
         }
+    }
+
+    @OnClick(R.id.btn_send_request)
+    void login() {
+        showDialog();
+
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("email", inputEmail.getText());
+            obj.put("password", inputPassword.getText());
+
+            APIObjectRequest req = new APIObjectRequest(this, Request.Method.POST, Constant.TOKEN_URL, obj, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    SharedPreferences.Editor editor = mPref.edit();
+
+                    try {
+                        editor.putString(Constant.PREF_TOKEN, response.getString("id"));
+                        editor.putString(Constant.PREF_USER_ID, response.getString("user_id"));
+                        editor.apply();
+
+                        hideDialog();
+
+                        Intent intent = new Intent(LoginActivity.this, ProjectListActivity.class);
+                        startActivity(intent);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        hideDialog();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                    hideDialog();
+                }
+            });
+
+            mRequestHelper.addToRequestQueue(req, TAG);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @OnClick(R.id.btn_signup)
+    void signup() {
+        Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
+        startActivity(intent);
     }
 }

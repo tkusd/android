@@ -7,23 +7,24 @@ import com.android.volley.ParseError;
 import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
 public class APIObjectRequest extends APIRequest<JSONObject> {
-    public APIObjectRequest(Context context, int method, String url, JSONArray body, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        super(context, method, url, body, listener, errorListener);
+    public APIObjectRequest(Context context, int method, String url, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        super(context, method, url, listener, errorListener);
     }
 
     public APIObjectRequest(Context context, int method, String url, JSONObject body, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        super(context, method, url, body, listener, errorListener);
-    }
-
-    public APIObjectRequest(Context context, int method, String url, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         super(context, method, url, listener, errorListener);
+
+        try {
+            setBody(body.toString().getBytes(PROTOCOL_CHARSET));
+        } catch (UnsupportedEncodingException e) {
+            // Ignore the error
+        }
     }
 
     @Override

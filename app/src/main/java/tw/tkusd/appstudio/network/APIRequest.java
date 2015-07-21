@@ -7,9 +7,6 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,22 +23,29 @@ public abstract class APIRequest<T> extends Request<T> {
         mListener = listener;
     }
 
-    public APIRequest(Context context, int method, String url, JSONObject body, Response.Listener<T> listener, Response.ErrorListener errorListener) {
+    public APIRequest(Context context, int method, String url, byte[] body, Response.Listener<T> listener, Response.ErrorListener errorListener) {
         this(context, method, url, listener, errorListener);
-        mBody = body.toString().getBytes();
-    }
-
-    public APIRequest(Context context, int method, String url, JSONArray body, Response.Listener<T> listener, Response.ErrorListener errorListener) {
-        this(context, method, url, listener, errorListener);
-        mBody = body.toString().getBytes();
+        mBody = body;
     }
 
     public Context getContext() {
         return mContext;
     }
 
+    public void setContext(Context context) {
+        mContext = context;
+    }
+
     public Response.Listener<T> getListener() {
         return mListener;
+    }
+
+    public void setListener(Response.Listener<T> listener) {
+        mListener = listener;
+    }
+
+    public void setBody(byte[] body) {
+        mBody = body;
     }
 
     @Override

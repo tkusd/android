@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".app.MainActivity"
+            android:name=".app.SignupActivity"
             android:label="Sign up" >
         </activity>
         <activity
