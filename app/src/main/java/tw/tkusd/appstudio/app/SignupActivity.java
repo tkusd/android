@@ -1,5 +1,6 @@
 package tw.tkusd.appstudio.app;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -60,6 +61,7 @@ public class SignupActivity extends AppCompatActivity {
     private RequestHelper mRequestHelper;
     private ProgressDialog pDialog;
     private SharedPreferences mPref;
+    public static final String MYPREFS="mySharedPreference";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,16 +98,11 @@ public class SignupActivity extends AppCompatActivity {
         String name=inputName.getText().toString();
         String email=inputEmail.getText().toString();
         String password=inputPassword.getText().toString();
-        git.login(new User(name,email,password), new Callback<Result>() {
+        git.signup(new User(name, email, password), new Callback<Result>() {
 
             @Override
             public void success(Result result, retrofit.client.Response response) {
-                hideDialog();
-                Toast.makeText(SignupActivity.this, "sing up seccess", Toast.LENGTH_SHORT).show();
-                //跳轉start
-                Intent intent = new Intent(SignupActivity.this, ProjectListActivity.class);
-                startActivity(intent);
-                //跳轉end
+               token();
             }
 
             @Override
@@ -116,7 +113,7 @@ public class SignupActivity extends AppCompatActivity {
                     nonetdialog();
                 } else {
                     //email
-                    String response_error,response_message;
+                    String response_error, response_message;
                     Result result = (Result) error.getBodyAs(Result.class);
                     response_error = result.geterror();
                     //response_message=result.getmessage();    測message
@@ -138,6 +135,47 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void token(){
+        String API = Constant.USER_URL;
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(API).
+                        setLogLevel(RestAdapter.LogLevel.FULL).
+                        build();
+        gitapi git = restAdapter.create(gitapi.class);
+
+        String email=inputEmail.getText().toString();
+        String password=inputPassword.getText().toString();
+        git.token(new User(email, password), new Callback<Result>() {
+
+            @Override
+            public void success(Result result, retrofit.client.Response response) {
+                hideDialog();
+                String gettoken = result.getId();
+                //sharedpreference----------------------------------------------------------
+                int mode = Activity.MODE_PRIVATE;
+                SharedPreferences mySharedPreference = getSharedPreferences(MYPREFS, mode);
+                SharedPreferences.Editor editor = mySharedPreference.edit();
+                editor.putBoolean("isTrue", true);
+                editor.putString("tokenid", gettoken);
+                editor.commit();
+                //-------------------------------------------------------------------------------
+                Toast.makeText(SignupActivity.this, "sing up seccess", Toast.LENGTH_SHORT).show();
+                //跳轉start
+                Intent intent = new Intent(SignupActivity.this, ProjectListActivity.class);
+                startActivity(intent);
+                //跳轉end
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                hideDialog();
+                textResult.setText("get_token_error");
+            }
+        });
+
     }
 
     //  沒網路時產生的dialog

@@ -10,10 +10,16 @@ public class User {
 
     public User(){};
 
+    //signup
     public  User(String name, String email,String password) {
         this.name= name;
         this.email = email;
         this.password = password;
+    }
+    //token
+    public User(String email,String password){
+        this.email=email;
+        this.password=password;
     }
     public String getUser() {
         return name;
