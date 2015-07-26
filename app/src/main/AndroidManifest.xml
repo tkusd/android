@@ -23,10 +23,6 @@
             android:label="Sign up" >
         </activity>
         <activity
-            android:name=".app.WelcomeActivity"
-            android:label="Welcome" >
-        </activity>
-        <activity
             android:name=".app.ProjectListActivity"
             android:label="@string/title_activity_project_list" >
         </activity>

@@ -4,8 +4,11 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,10 +23,20 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.OkClient;
+import retrofit.http.Body;
+import retrofit.http.POST;
+import retrofit.mime.TypedByteArray;
 import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
+import tw.tkusd.appstudio.network.APIObjectRequest;
 import tw.tkusd.appstudio.util.RequestHelper;
 
 public class SignupActivity extends AppCompatActivity {
@@ -46,6 +59,7 @@ public class SignupActivity extends AppCompatActivity {
 
     private RequestHelper mRequestHelper;
     private ProgressDialog pDialog;
+    private SharedPreferences mPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +67,13 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
         ButterKnife.inject(this);
         mRequestHelper = RequestHelper.getInstance(this);
+        mPref = PreferenceManager.getDefaultSharedPreferences(this);
         btnSendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 textResult.setText("");
-                post();
+                singup();
+
             }
         });
     }
@@ -68,74 +84,60 @@ public class SignupActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    public void post(){
+    public void singup() {
         showDialog();
-        JSONObject obj = new JSONObject();
+        String API = Constant.USER_URL;
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(API).
+                        setLogLevel(RestAdapter.LogLevel.FULL).
+                        build();
+        gitapi git = restAdapter.create(gitapi.class);
 
-        try {
-            obj.put("name", inputName.getText());
-            obj.put("email", inputEmail.getText());
-            obj.put("password", inputPassword.getText());
+        String name=inputName.getText().toString();
+        String email=inputEmail.getText().toString();
+        String password=inputPassword.getText().toString();
+        git.login(new User(name,email,password), new Callback<Result>() {
 
-            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, Constant.USER_URL, obj, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    //textResult.setText(response.toString());// 回傳值
-                    hideDialog();
-                    Toast.makeText(SignupActivity.this,"註冊成功",Toast.LENGTH_SHORT).show();
-                    //跳轉畫面
-                    showDialog();
-                    Intent intent = new Intent(SignupActivity.this, ProjectListActivity.class);
-                    hideDialog();//
-                    startActivity(intent);
-                    //跳轉end
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    if (error.networkResponse != null) {
-                        try {
-                            JSONObject result = new JSONObject(new String(error.networkResponse.data));
-                            //Toast.makeText(MainActivity.this,result.toString(),Toast.LENGTH_LONG).show();
-                            if(inputName.getText().length()==0)
-                            {
-                                inputName.setError("name is reqired.");
-                            }
+            @Override
+            public void success(Result result, retrofit.client.Response response) {
+                hideDialog();
+                Toast.makeText(SignupActivity.this, "sing up seccess", Toast.LENGTH_SHORT).show();
+                //跳轉start
+                Intent intent = new Intent(SignupActivity.this, ProjectListActivity.class);
+                startActivity(intent);
+                //跳轉end
+            }
 
-                            //測email
-                            if (inputEmail.getText().length()==0 ) {
-                                inputEmail.setError("email is required");
-                            }
-
-                            String test = result.getString("error");
-                            if(test.equals("1301")){
-                                inputEmail.setError("eamil has been used");
-                            }else if(test.equals(("1104"))){
-                                inputEmail.setError("invalid email");
-                            }
-
-                            //測password
-                            if(inputPassword.getText().length()<6)
-                            {
-                                inputPassword.setError("password need  at least 6");
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+            @Override
+            public void failure(RetrofitError error) {
+                hideDialog();
+                //no network
+                if (error.isNetworkError()) {
+                    nonetdialog();
+                } else {
+                    //email
+                    String response_error,response_message;
+                    Result result = (Result) error.getBodyAs(Result.class);
+                    response_error = result.geterror();
+                    //response_message=result.getmessage();    測message
+                    if (response_error.equals("1301")) {
+                        inputEmail.setError("email has been  used");
                     }
-                    else {
-                        //沒網路時的dialog
-                        nonetdialog();
+                    final String putemail = inputEmail.getText().toString();
+                    if (!isValidEmail(putemail)) {
+                        inputEmail.setError("invalid email");
                     }
-                    hideDialog();
+                    //name
+                    if (inputName.getText().length() == 0) {
+                        inputName.setError("name  is required");
+                    }
+                    //password
+                    if (inputPassword.getText().length() < 6) {
+                        inputPassword.setError("password need at least 6");
+                    }
                 }
-            });
-
-            mRequestHelper.addToRequestQueue(req, TAG);
-        } catch (JSONException e){
-            e.printStackTrace();
-        }
+            }
+        });
     }
 
     //  沒網路時產生的dialog
@@ -150,6 +152,12 @@ public class SignupActivity extends AppCompatActivity {
                     }
                 });
         alertDialog.show();
+    }
+    //valid email
+    public static boolean isValidEmail(String email){
+        if(email==null)
+            return false;
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     private void showDialog() {
