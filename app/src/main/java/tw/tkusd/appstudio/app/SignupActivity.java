@@ -1,8 +1,8 @@
 package tw.tkusd.appstudio.app;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,28 +16,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
-import retrofit.client.OkClient;
-import retrofit.http.Body;
-import retrofit.http.POST;
-import retrofit.mime.TypedByteArray;
 import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
-import tw.tkusd.appstudio.network.APIObjectRequest;
 import tw.tkusd.appstudio.util.RequestHelper;
 
 public class SignupActivity extends AppCompatActivity {
@@ -61,7 +46,8 @@ public class SignupActivity extends AppCompatActivity {
     private RequestHelper mRequestHelper;
     private ProgressDialog pDialog;
     private SharedPreferences mPref;
-    public static final String MYPREFS="mySharedPreference";
+    private Context mContext;
+    private boolean isok;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +59,19 @@ public class SignupActivity extends AppCompatActivity {
         btnSendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                textResult.setText("");
-                singup();
-
+                final String putemail = inputEmail.getText().toString();
+                if (!isValidEmail(putemail)) {
+                    inputEmail.setError("invalid email");
+                }
+                if (inputName.getText().length() == 0) {
+                    inputName.setError("name  is required");
+                }
+                if (inputPassword.getText().length() < 6) {
+                    inputPassword.setError("password length need at least 6");
+                }
+                if (inputName.getText().length() != 0 && inputPassword.getText().length() != 0 && isValidEmail(putemail)) {
+                    signup();
+                }
             }
         });
     }
@@ -86,81 +82,67 @@ public class SignupActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    public void singup() {
+    public void signup() {
         showDialog();
-        String API = Constant.USER_URL;
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(API).
+                .setEndpoint(Constant.API_URL).
                         setLogLevel(RestAdapter.LogLevel.FULL).
                         build();
-        gitapi git = restAdapter.create(gitapi.class);
+        API api = restAdapter.create(API.class);
 
         String name=inputName.getText().toString();
         String email=inputEmail.getText().toString();
         String password=inputPassword.getText().toString();
-        git.signup(new User(name, email, password), new Callback<Result>() {
+        api.signup(new User(name, email, password), new Callback<User>() {
 
             @Override
-            public void success(Result result, retrofit.client.Response response) {
-               token();
+            public void success(User user, retrofit.client.Response response) {
+                token();
             }
 
             @Override
             public void failure(RetrofitError error) {
                 hideDialog();
                 //no network
-                if (error.isNetworkError()) {
+                if (error.getKind().equals(RetrofitError.Kind.NETWORK)) {
                     nonetdialog();
                 } else {
-                    //email
-                    String response_error, response_message;
-                    Result result = (Result) error.getBodyAs(Result.class);
-                    response_error = result.geterror();
-                    //response_message=result.getmessage();    測message
+                    //email used
+                    String response_error;
+                    User user = (User) error.getBodyAs(User.class);
+                    response_error = user.geterror();
                     if (response_error.equals("1301")) {
                         inputEmail.setError("email has been  used");
                     }
-                    final String putemail = inputEmail.getText().toString();
-                    if (!isValidEmail(putemail)) {
-                        inputEmail.setError("invalid email");
-                    }
-                    //name
-                    if (inputName.getText().length() == 0) {
-                        inputName.setError("name  is required");
-                    }
-                    //password
-                    if (inputPassword.getText().length() < 6) {
-                        inputPassword.setError("password need at least 6");
-                    }
+
                 }
             }
         });
     }
 
-    public void token(){
-        String API = Constant.USER_URL;
+    public void token() {
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(API).
+                .setEndpoint(Constant.API_URL).
                         setLogLevel(RestAdapter.LogLevel.FULL).
                         build();
-        gitapi git = restAdapter.create(gitapi.class);
+        API api = restAdapter.create(API.class);
 
-        String email=inputEmail.getText().toString();
-        String password=inputPassword.getText().toString();
-        git.token(new User(email, password), new Callback<Result>() {
+        String email = inputEmail.getText().toString();
+        String password = inputPassword.getText().toString();
+        api.token(new User(email, password), new Callback<User>() {
 
             @Override
-            public void success(Result result, retrofit.client.Response response) {
-                hideDialog();
-                String gettoken = result.getId();
+            public void success(User user, retrofit.client.Response response) {
+                String gettoken = user.getId();
+                String getuserid = user.getUserId();
                 //sharedpreference----------------------------------------------------------
-                int mode = Activity.MODE_PRIVATE;
-                SharedPreferences mySharedPreference = getSharedPreferences(MYPREFS, mode);
-                SharedPreferences.Editor editor = mySharedPreference.edit();
-                editor.putBoolean("isTrue", true);
-                editor.putString("tokenid", gettoken);
-                editor.commit();
+                mPref = PreferenceManager.getDefaultSharedPreferences(SignupActivity.this);
+                SharedPreferences.Editor editor = mPref.edit();
+                editor.putString(Constant.PREF_TOKEN, gettoken);
+                editor.putString(Constant.PREF_USER_ID, getuserid);
+                editor.apply();
                 //-------------------------------------------------------------------------------
+                hideDialog();
                 Toast.makeText(SignupActivity.this, "sing up seccess", Toast.LENGTH_SHORT).show();
                 //跳轉start
                 Intent intent = new Intent(SignupActivity.this, ProjectListActivity.class);
@@ -183,7 +165,7 @@ public class SignupActivity extends AppCompatActivity {
         AlertDialog alertDialog = new AlertDialog.Builder(SignupActivity.this).create();
         alertDialog.setTitle("註冊失敗");
         alertDialog.setMessage("無網路連接");
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

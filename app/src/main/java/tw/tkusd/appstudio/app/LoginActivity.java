@@ -83,7 +83,7 @@ public class LoginActivity extends AppCompatActivity{
             obj.put("email", inputEmail.getText());
             obj.put("password", inputPassword.getText());
 
-            APIObjectRequest req = new APIObjectRequest(this, Request.Method.POST, Constant.TOKEN_URL, obj, new Response.Listener<JSONObject>() {
+            APIObjectRequest req = new APIObjectRequest(this, Request.Method.POST, "http://tkusd.zespia.tw/v1/tokens", obj, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     SharedPreferences.Editor editor = mPref.edit();
@@ -94,7 +94,6 @@ public class LoginActivity extends AppCompatActivity{
                         editor.apply();
 
                         hideDialog();
-
                         Intent intent = new Intent(LoginActivity.this, ProjectListActivity.class);
                         startActivity(intent);
                     } catch (JSONException e) {

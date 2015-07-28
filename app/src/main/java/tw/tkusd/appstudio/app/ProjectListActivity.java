@@ -1,6 +1,5 @@
 package tw.tkusd.appstudio.app;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,10 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit.Callback;
@@ -23,7 +18,6 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
-import tw.tkusd.appstudio.network.APIStringRequest;
 import tw.tkusd.appstudio.util.RequestHelper;
 
 public class ProjectListActivity extends AppCompatActivity {
@@ -77,36 +71,31 @@ public class ProjectListActivity extends AppCompatActivity {
     }
 
     public void loadPreference() {
-        int mode = Activity.MODE_PRIVATE;
-        SharedPreferences mySharedPreference = getSharedPreferences(SignupActivity.MYPREFS, mode);
-        taketoken_id = mySharedPreference.getString("tokenid", "null");
     }
     public void deletetoken(){
-        loadPreference();
-        String API = Constant.USER_URL ;
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(API).
+                .setEndpoint(Constant.API_URL).
                         setLogLevel(RestAdapter.LogLevel.FULL).
                         build();
-        gitapi git = restAdapter.create(gitapi.class);
+        API api = restAdapter.create(API.class);
 
-        git.delete(taketoken_id,new Callback<Result>() {
+        api.delete(mPref.getString(Constant.PREF_TOKEN, ""),new Callback<User>() {
 
             @Override
-            public void success(Result result, retrofit.client.Response response) {
+            public void success(User user, retrofit.client.Response response) {
                 Intent intent = new Intent(ProjectListActivity.this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
             @Override
             public void failure(RetrofitError error) {
-                if (error.isNetworkError()) {
+                if (error.getKind().equals(RetrofitError.Kind.NETWORK)){
                     nonetdialog();
                 } else {
                     String response_error, response_message;
-                    Result result = (Result) error.getBodyAs(Result.class);
-                    response_error = result.geterror();
-                    response_message = result.getmessage();
+                    User user = (User) error.getBodyAs(User.class);
+                    response_error = user.geterror();
+                    response_message = user.getmessage();
                     Toast.makeText(ProjectListActivity.this, "error:" + response_error + ",message:" + response_message, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -116,7 +105,7 @@ public class ProjectListActivity extends AppCompatActivity {
         AlertDialog alertDialog = new AlertDialog.Builder(ProjectListActivity.this).create();
         alertDialog.setTitle("fail");
         alertDialog.setMessage("no network connection");
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
