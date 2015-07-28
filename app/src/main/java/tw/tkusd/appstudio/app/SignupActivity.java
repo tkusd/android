@@ -2,26 +2,25 @@ package tw.tkusd.appstudio.app;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
 import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
 import tw.tkusd.appstudio.util.RequestHelper;
@@ -46,6 +45,9 @@ public class SignupActivity extends AppCompatActivity {
 
     private RequestHelper mRequestHelper;
     private ProgressDialog pDialog;
+    private SharedPreferences mPref;
+    private Context mContext;
+    private boolean isok;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +55,23 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
         ButterKnife.inject(this);
         mRequestHelper = RequestHelper.getInstance(this);
+        mPref = PreferenceManager.getDefaultSharedPreferences(this);
         btnSendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                textResult.setText("");
-                post();
+                final String putemail = inputEmail.getText().toString();
+                if (!isValidEmail(putemail)) {
+                    inputEmail.setError("invalid email");
+                }
+                if (inputName.getText().length() == 0) {
+                    inputName.setError("name  is required");
+                }
+                if (inputPassword.getText().length() < 6) {
+                    inputPassword.setError("password length need at least 6");
+                }
+                if (inputName.getText().length() != 0 && inputPassword.getText().length() != 0 && isValidEmail(putemail)) {
+                    signup();
+                }
             }
         });
     }
@@ -68,74 +82,82 @@ public class SignupActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    public void post(){
+    public void signup() {
         showDialog();
-        JSONObject obj = new JSONObject();
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(Constant.API_URL).
+                        setLogLevel(RestAdapter.LogLevel.FULL).
+                        build();
+        API api = restAdapter.create(API.class);
 
-        try {
-            obj.put("name", inputName.getText());
-            obj.put("email", inputEmail.getText());
-            obj.put("password", inputPassword.getText());
+        String name=inputName.getText().toString();
+        String email=inputEmail.getText().toString();
+        String password=inputPassword.getText().toString();
+        api.signup(new User(name, email, password), new Callback<User>() {
 
-            JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, Constant.USER_URL, obj, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    //textResult.setText(response.toString());// 回傳值
-                    hideDialog();
-                    Toast.makeText(SignupActivity.this,"註冊成功",Toast.LENGTH_SHORT).show();
-                    //跳轉畫面
-                    showDialog();
-                    Intent intent = new Intent(SignupActivity.this, ProjectListActivity.class);
-                    hideDialog();//
-                    startActivity(intent);
-                    //跳轉end
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    if (error.networkResponse != null) {
-                        try {
-                            JSONObject result = new JSONObject(new String(error.networkResponse.data));
-                            //Toast.makeText(MainActivity.this,result.toString(),Toast.LENGTH_LONG).show();
-                            if(inputName.getText().length()==0)
-                            {
-                                inputName.setError("name is reqired.");
-                            }
+            @Override
+            public void success(User user, retrofit.client.Response response) {
+                token();
+            }
 
-                            //測email
-                            if (inputEmail.getText().length()==0 ) {
-                                inputEmail.setError("email is required");
-                            }
-
-                            String test = result.getString("error");
-                            if(test.equals("1301")){
-                                inputEmail.setError("eamil has been used");
-                            }else if(test.equals(("1104"))){
-                                inputEmail.setError("invalid email");
-                            }
-
-                            //測password
-                            if(inputPassword.getText().length()<6)
-                            {
-                                inputPassword.setError("password need  at least 6");
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+            @Override
+            public void failure(RetrofitError error) {
+                hideDialog();
+                //no network
+                if (error.getKind().equals(RetrofitError.Kind.NETWORK)) {
+                    nonetdialog();
+                } else {
+                    //email used
+                    String response_error;
+                    User user = (User) error.getBodyAs(User.class);
+                    response_error = user.geterror();
+                    if (response_error.equals("1301")) {
+                        inputEmail.setError("email has been  used");
                     }
-                    else {
-                        //沒網路時的dialog
-                        nonetdialog();
-                    }
-                    hideDialog();
-                }
-            });
 
-            mRequestHelper.addToRequestQueue(req, TAG);
-        } catch (JSONException e){
-            e.printStackTrace();
-        }
+                }
+            }
+        });
+    }
+
+    public void token() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(Constant.API_URL).
+                        setLogLevel(RestAdapter.LogLevel.FULL).
+                        build();
+        API api = restAdapter.create(API.class);
+
+        String email = inputEmail.getText().toString();
+        String password = inputPassword.getText().toString();
+        api.token(new User(email, password), new Callback<User>() {
+
+            @Override
+            public void success(User user, retrofit.client.Response response) {
+                String gettoken = user.getId();
+                String getuserid = user.getUserId();
+                //sharedpreference----------------------------------------------------------
+                mPref = PreferenceManager.getDefaultSharedPreferences(SignupActivity.this);
+                SharedPreferences.Editor editor = mPref.edit();
+                editor.putString(Constant.PREF_TOKEN, gettoken);
+                editor.putString(Constant.PREF_USER_ID, getuserid);
+                editor.apply();
+                //-------------------------------------------------------------------------------
+                hideDialog();
+                Toast.makeText(SignupActivity.this, "sing up seccess", Toast.LENGTH_SHORT).show();
+                //跳轉start
+                Intent intent = new Intent(SignupActivity.this, ProjectListActivity.class);
+                startActivity(intent);
+                //跳轉end
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                hideDialog();
+                textResult.setText("get_token_error");
+            }
+        });
+
     }
 
     //  沒網路時產生的dialog
@@ -143,13 +165,19 @@ public class SignupActivity extends AppCompatActivity {
         AlertDialog alertDialog = new AlertDialog.Builder(SignupActivity.this).create();
         alertDialog.setTitle("註冊失敗");
         alertDialog.setMessage("無網路連接");
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 });
         alertDialog.show();
+    }
+    //valid email
+    public static boolean isValidEmail(String email){
+        if(email==null)
+            return false;
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     private void showDialog() {
