@@ -8,20 +8,16 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
 import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
-import tw.tkusd.appstudio.network.APIObjectRequest;
 import tw.tkusd.appstudio.util.RequestHelper;
 
 /**
@@ -77,42 +73,36 @@ public class LoginActivity extends AppCompatActivity{
     @OnClick(R.id.btn_send_request)
     void login() {
         showDialog();
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(Constant.API_URL).
+                        setLogLevel(RestAdapter.LogLevel.FULL).
+                        build();
+        API api = restAdapter.create(API.class);
+        String email = inputEmail.getText().toString();
+        final String password = inputPassword.getText().toString();
+        api.login(new User(email, password), new Callback<User>() {
+            @Override
+            public void success(User user, retrofit.client.Response response) {
+                String gettoken = user.getId();
+                String getuserid = user.getUserId();
 
-        try {
-            JSONObject obj = new JSONObject();
-            obj.put("email", inputEmail.getText());
-            obj.put("password", inputPassword.getText());
+                mPref = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                SharedPreferences.Editor editor = mPref.edit();
+                editor.putString(Constant.PREF_TOKEN, gettoken);
+                editor.putString(Constant.PREF_USER_ID, getuserid);
+                editor.apply();
 
-            APIObjectRequest req = new APIObjectRequest(this, Request.Method.POST, "http://tkusd.zespia.tw/v1/tokens", obj, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    SharedPreferences.Editor editor = mPref.edit();
-
-                    try {
-                        editor.putString(Constant.PREF_TOKEN, response.getString("id"));
-                        editor.putString(Constant.PREF_USER_ID, response.getString("user_id"));
-                        editor.apply();
-
-                        hideDialog();
-                        Intent intent = new Intent(LoginActivity.this, ProjectListActivity.class);
-                        startActivity(intent);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        hideDialog();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    error.printStackTrace();
-                    hideDialog();
-                }
-            });
-
-            mRequestHelper.addToRequestQueue(req, TAG);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+                hideDialog();
+                Toast.makeText(LoginActivity.this, "login success", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, ProjectListActivity.class);
+                startActivity(intent);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                hideDialog();
+                textResult.setText(error.toString());
+            }
+        });
     }
 
     @OnClick(R.id.btn_signup)

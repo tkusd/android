@@ -15,6 +15,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Log out"/>
+    <Button
+        android:id="@+id/setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Setting"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <ListView
         android:layout_width="wrap_content"

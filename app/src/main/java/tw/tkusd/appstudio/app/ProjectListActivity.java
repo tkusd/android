@@ -70,8 +70,12 @@ public class ProjectListActivity extends AppCompatActivity {
         deletetoken();
     }
 
-    public void loadPreference() {
+    @OnClick(R.id.setting)
+    void onSettingClick() {
+        Intent intent=new Intent(ProjectListActivity.this,SettingActivity.class);
+        startActivity(intent);
     }
+
     public void deletetoken(){
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(Constant.API_URL).

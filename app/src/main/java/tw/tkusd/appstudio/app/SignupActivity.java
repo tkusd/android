@@ -97,7 +97,9 @@ public class SignupActivity extends AppCompatActivity {
 
             @Override
             public void success(User user, retrofit.client.Response response) {
-                token();
+                Toast.makeText(SignupActivity.this,"註冊成功",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(SignupActivity.this, ProjectListActivity.class);
+                startActivity(intent);
             }
 
             @Override
@@ -120,45 +122,6 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    public void token() {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(Constant.API_URL).
-                        setLogLevel(RestAdapter.LogLevel.FULL).
-                        build();
-        API api = restAdapter.create(API.class);
-
-        String email = inputEmail.getText().toString();
-        String password = inputPassword.getText().toString();
-        api.token(new User(email, password), new Callback<User>() {
-
-            @Override
-            public void success(User user, retrofit.client.Response response) {
-                String gettoken = user.getId();
-                String getuserid = user.getUserId();
-                //sharedpreference----------------------------------------------------------
-                mPref = PreferenceManager.getDefaultSharedPreferences(SignupActivity.this);
-                SharedPreferences.Editor editor = mPref.edit();
-                editor.putString(Constant.PREF_TOKEN, gettoken);
-                editor.putString(Constant.PREF_USER_ID, getuserid);
-                editor.apply();
-                //-------------------------------------------------------------------------------
-                hideDialog();
-                Toast.makeText(SignupActivity.this, "sing up seccess", Toast.LENGTH_SHORT).show();
-                //跳轉start
-                Intent intent = new Intent(SignupActivity.this, ProjectListActivity.class);
-                startActivity(intent);
-                //跳轉end
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                hideDialog();
-                textResult.setText("get_token_error");
-            }
-        });
-
-    }
 
     //  沒網路時產生的dialog
     private void nonetdialog(){
