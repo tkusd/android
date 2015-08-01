@@ -7,11 +7,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -23,6 +26,9 @@ import tw.tkusd.appstudio.util.RequestHelper;
 public class ProjectListActivity extends AppCompatActivity {
     public static final String TAG = ProjectListActivity.class.getSimpleName();
 
+    @InjectView(R.id.textView)
+    TextView text;
+
     private RequestHelper mRequestHelper;
     private SharedPreferences mPref;
     String taketoken_id;
@@ -31,6 +37,10 @@ public class ProjectListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_list);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setOnMenuItemClickListener(onMenuItemClick);
+
         ButterKnife.inject(this);
 
         mRequestHelper = RequestHelper.getInstance(this);
@@ -50,6 +60,24 @@ public class ProjectListActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_project_list, menu);
         return true;
     }
+
+    private Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+
+            switch (menuItem.getItemId()) {
+                case R.id.action_setting:
+                    text.setText("Click setting");
+
+                    break;
+                case R.id.action_logout:
+                    text.setText("Click logout");
+                    break;
+            }
+
+            return true;
+        }
+    };
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
