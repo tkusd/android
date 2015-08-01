@@ -4,6 +4,7 @@ import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Path;
 
 /**
@@ -19,6 +20,8 @@ public interface API {
     void delete(@Path("tokenid") String tokenid,Callback<User> callback);
     @DELETE("/v1/users/{userid}")
     void deleteAccount(@Path("userid") String userid,Callback<User> callback);
+    @PUT("/v1/users/{userid}")
+    void update(@Body Data data,@Path("userid") String userid,Callback<Data> callback);
 
 
 }

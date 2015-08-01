@@ -23,7 +23,8 @@
     <EditText
         android:layout_width="349dp"
         android:layout_height="wrap_content"
-        android:id="@+id/edtEmail"/>
+        android:id="@+id/edtEmail"
+        android:inputType="textEmailAddress"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,7 +39,8 @@
     <EditText
         android:layout_width="348dp"
         android:layout_height="wrap_content"
-        android:id="@+id/edtOldPass"/>
+        android:id="@+id/edtOldPass"
+        android:inputType="textPassword"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,7 +50,8 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/edtNewPass"/>
+        android:id="@+id/edtNewPass"
+        android:inputType="textPassword"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

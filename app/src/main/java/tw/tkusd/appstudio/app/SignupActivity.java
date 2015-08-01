@@ -90,16 +90,20 @@ public class SignupActivity extends AppCompatActivity {
                         build();
         API api = restAdapter.create(API.class);
 
-        String name=inputName.getText().toString();
-        String email=inputEmail.getText().toString();
+        final String name=inputName.getText().toString();
+        final String email=inputEmail.getText().toString();
         String password=inputPassword.getText().toString();
         api.signup(new User(name, email, password), new Callback<User>() {
 
             @Override
             public void success(User user, retrofit.client.Response response) {
-                Toast.makeText(SignupActivity.this,"註冊成功",Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(SignupActivity.this, ProjectListActivity.class);
-                startActivity(intent);
+                mPref = PreferenceManager.getDefaultSharedPreferences(SignupActivity.this);
+                SharedPreferences.Editor editor = mPref.edit();
+                editor.putString(Constant.PREF_NAME, name);
+                editor.putString(Constant.PREF_EMAIL, email);
+                editor.apply();
+                login();
+
             }
 
             @Override
@@ -118,6 +122,37 @@ public class SignupActivity extends AppCompatActivity {
                     }
 
                 }
+            }
+        });
+    }
+
+    public void login() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(Constant.API_URL).
+                        setLogLevel(RestAdapter.LogLevel.FULL).
+                        build();
+        API api = restAdapter.create(API.class);
+        String email = inputEmail.getText().toString();
+        final String password = inputPassword.getText().toString();
+        api.login(new User(email, password), new Callback<User>() {
+            @Override
+            public void success(User user, retrofit.client.Response response) {
+                String gettoken = user.getId();
+                String getuserid = user.getUserId();
+
+                mPref = PreferenceManager.getDefaultSharedPreferences(SignupActivity.this);
+                SharedPreferences.Editor editor = mPref.edit();
+                editor.putString(Constant.PREF_TOKEN, gettoken);
+                editor.putString(Constant.PREF_USER_ID, getuserid);
+                editor.apply();
+                Toast.makeText(SignupActivity.this, "註冊成功", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(SignupActivity.this, ProjectListActivity.class);
+                startActivity(intent);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                hideDialog();
+                textResult.setText(error.toString());
             }
         });
     }

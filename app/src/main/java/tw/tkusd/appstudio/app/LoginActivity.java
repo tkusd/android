@@ -100,7 +100,23 @@ public class LoginActivity extends AppCompatActivity{
             @Override
             public void failure(RetrofitError error) {
                 hideDialog();
-                textResult.setText(error.toString());
+                String response_error;
+                User user = (User) error.getBodyAs(User.class);
+                response_error = user.geterror();
+                if (response_error.equals("1100")) {
+                    inputEmail.setError("invalid email");
+                    inputPassword.setError("invalid password");
+                }
+                if(response_error.equals("1300")){
+                    inputPassword.setError("invalid password");
+                }
+                if(response_error.equals("1200")){
+                    inputEmail.setError("email hasn't been used");
+                }
+                if(response_error.equals("1104")){
+                    inputEmail.setError("invalid email");
+                }
+
             }
         });
     }

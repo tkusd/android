@@ -54,12 +54,13 @@ public class SettingActivity extends AppCompatActivity {
 
         mRequestHelper = RequestHelper.getInstance(this);
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
+        edtName.setText(mPref.getString(Constant.PREF_NAME,""));
+        edtEmail.setText(mPref.getString(Constant.PREF_EMAIL,""));
     }
 
     @Override
     protected void onDestroy() {
         mRequestHelper.cancelAllRequests(TAG);
-
         super.onDestroy();
     }
 
@@ -84,72 +85,79 @@ public class SettingActivity extends AppCompatActivity {
 
     }
 
-//    @OnClick(R.id.btn_update)
-//    void onUpdate(){
-//        update();
-//    }
-//
-//    @OnClick(R.id.btn_updatePassword)
-//    void onUpdatePassword(){
-//        updatePassword();
-//    }
+    @OnClick(R.id.btn_update)
+    void onUpdate(){
+        update();
+    }
 
-//    public void update(){
-//        RestAdapter restAdapter = new RestAdapter.Builder()
-//                .setEndpoint(Constant.API_URL).setLogLevel(RestAdapter.LogLevel.FULL).setRequestInterceptor(new RequestInterceptor() {
-//                    @Override
-//                    public void intercept(RequestInterceptor.RequestFacade request) {
-//                        if (mPref!=null) {
-//                            String token = mPref.getString(Constant.PREF_TOKEN, "");
-//                            request.addHeader("Authorization", "Bearer " + token);
-//                        }
-//                    }
-//                }).build();
-//        API api = restAdapter.create(API.class);
-//        String userid = mPref.getString(Constant.PREF_USER_ID, "");
-//        String name=edtName.getText().toString();
-//        String email=edtEmail.getText().toString();
-//        api.update(new User(name, email,""),userid, new Callback<User>() {
-//            @Override
-//            public void success(User user, retrofit.client.Response response) {
-//                Toast.makeText(SettingActivity.this, "update success", Toast.LENGTH_SHORT).show();
-//            }
+    @OnClick(R.id.btn_updatePassword)
+    void onUpdatePassword(){
+        updatePassword();
+    }
+
+    public void update(){
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(Constant.API_URL).setLogLevel(RestAdapter.LogLevel.FULL).setRequestInterceptor(new RequestInterceptor() {
+                    @Override
+                    public void intercept(RequestInterceptor.RequestFacade request) {
+                        if (mPref!=null) {
+                            String token = mPref.getString(Constant.PREF_TOKEN, "");
+                            request.addHeader("Authorization", "Bearer " + token);
+                        }
+                    }
+                }).build();
+        API api = restAdapter.create(API.class);
+        String userid = mPref.getString(Constant.PREF_USER_ID, "");
+        String name=edtName.getText().toString();
+        String email=edtEmail.getText().toString();
+        api.update(new Data(name, email), userid, new Callback<Data>() {
+
+            @Override
+            public void success(Data data, retrofit.client.Response response) {
+                Toast.makeText(SettingActivity.this, "update success", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(SettingActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        }
 //
-//            @Override
-//            public void failure(RetrofitError error) {
-//                Toast.makeText(SettingActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
-//
-//    public void updatePassword(){
-//        RestAdapter restAdapter = new RestAdapter.Builder()
-//                .setEndpoint(Constant.API_URL).setLogLevel(RestAdapter.LogLevel.FULL).setRequestInterceptor(new RequestInterceptor() {
-//                    @Override
-//                    public void intercept(RequestInterceptor.RequestFacade request) {
-//                        if (mPref!=null) {
-//                            String token = mPref.getString(Constant.PREF_TOKEN, "");
-//                            request.addHeader("Authorization", "Bearer " + token);
-//                        }
-//                    }
-//                }).build();
-//        API api = restAdapter.create(API.class);
-//        String userid = mPref.getString(Constant.PREF_USER_ID, "");
-//        api.deleteAccount(userid, new Callback<User>() {
-//            @Override
-//            public void success(User user, retrofit.client.Response response) {
-//                Toast.makeText(SettingActivity.this, "delete success", Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent(SettingActivity.this, LoginActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                startActivity(intent);
-//            }
-//
-//            @Override
-//            public void failure(RetrofitError error) {
-//                Toast.makeText(SettingActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
+    public void updatePassword(){
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(Constant.API_URL).setLogLevel(RestAdapter.LogLevel.FULL).setRequestInterceptor(new RequestInterceptor() {
+                    @Override
+                    public void intercept(RequestInterceptor.RequestFacade request) {
+                        if (mPref!=null) {
+                            String token = mPref.getString(Constant.PREF_TOKEN, "");
+                            request.addHeader("Authorization", "Bearer " + token);
+                        }
+                    }
+                }).build();
+        API api = restAdapter.create(API.class);
+        String userid = mPref.getString(Constant.PREF_USER_ID, "");
+        String email=edtEmail.getText().toString();
+        String old_pass=edtOldpass.getText().toString();
+        String new_pass=edtNewPass.getText().toString();
+        api.update(new Data(email,old_pass,new_pass),userid, new Callback<Data>() {
+
+            @Override
+            public void success(Data data, retrofit.client.Response response) {
+                Toast.makeText(SettingActivity.this, "update success", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                String response_error;
+                User user = (User) error.getBodyAs(User.class);
+                response_error = user.geterror();
+                if(response_error.equals("1300")){
+                    edtOldpass.setError("invalid password");
+                }
+            }
+        });
+    }
 
 
 
@@ -158,7 +166,7 @@ public class SettingActivity extends AppCompatActivity {
                 .setEndpoint(Constant.API_URL).setLogLevel(RestAdapter.LogLevel.FULL).setRequestInterceptor(new RequestInterceptor() {
                     @Override
                     public void intercept(RequestInterceptor.RequestFacade request) {
-                        if (mPref!=null) {
+                        if (mPref != null) {
                             String token = mPref.getString(Constant.PREF_TOKEN, "");
                             request.addHeader("Authorization", "Bearer " + token);
                         }
@@ -182,7 +190,5 @@ public class SettingActivity extends AppCompatActivity {
         });
 
     }
-
-
-
+    
 }
