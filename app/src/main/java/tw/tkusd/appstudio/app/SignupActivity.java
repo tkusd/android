@@ -134,11 +134,11 @@ public class SignupActivity extends AppCompatActivity {
         API api = restAdapter.create(API.class);
         String email = inputEmail.getText().toString();
         final String password = inputPassword.getText().toString();
-        api.login(new User(email, password), new Callback<User>() {
+        api.login(new Token(email, password), new Callback<Token>() {
             @Override
-            public void success(User user, retrofit.client.Response response) {
-                String gettoken = user.getId();
-                String getuserid = user.getUserId();
+            public void success(Token token, retrofit.client.Response response) {
+                String gettoken = token.getToken();
+                String getuserid = token.getUser_id();
 
                 mPref = PreferenceManager.getDefaultSharedPreferences(SignupActivity.this);
                 SharedPreferences.Editor editor = mPref.edit();

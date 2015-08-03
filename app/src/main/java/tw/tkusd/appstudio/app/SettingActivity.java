@@ -15,9 +15,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import retrofit.Callback;
-import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
+import retrofit.client.Response;
 import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
 import tw.tkusd.appstudio.util.RequestHelper;
@@ -44,6 +44,7 @@ public class SettingActivity extends AppCompatActivity {
     private RequestHelper mRequestHelper;
     private SharedPreferences mPref;
     public static final String TAG = SettingActivity.class.getSimpleName();
+    private String userid;
 
 
     @Override
@@ -51,11 +52,34 @@ public class SettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         ButterKnife.inject(this);
-
         mRequestHelper = RequestHelper.getInstance(this);
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
-        edtName.setText(mPref.getString(Constant.PREF_NAME,""));
-        edtEmail.setText(mPref.getString(Constant.PREF_EMAIL,""));
+        userid = mPref.getString(Constant.PREF_USER_ID, "");
+        getUser();
+
+    }
+
+    private void getUser() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(Constant.API_URL).setLogLevel(RestAdapter.LogLevel.FULL)
+                .setRequestInterceptor(new CustomRequestInterceptor(this)).build();
+        API api = restAdapter.create(API.class);
+
+        api.getUser(userid, new Callback<User>() {
+            @Override
+            public void success(User user, Response response) {
+                String getName = user.getName();
+                String getEmail = user.getEmail();
+                edtName.setText(getName);
+                edtEmail.setText(getEmail);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(SettingActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     @Override
@@ -75,13 +99,7 @@ public class SettingActivity extends AppCompatActivity {
                         deleteAccount();
                     }
                 })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .show();
+                .setNegativeButton("取消", null).show();
 
     }
 
@@ -97,23 +115,15 @@ public class SettingActivity extends AppCompatActivity {
 
     public void update(){
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(Constant.API_URL).setLogLevel(RestAdapter.LogLevel.FULL).setRequestInterceptor(new RequestInterceptor() {
-                    @Override
-                    public void intercept(RequestInterceptor.RequestFacade request) {
-                        if (mPref!=null) {
-                            String token = mPref.getString(Constant.PREF_TOKEN, "");
-                            request.addHeader("Authorization", "Bearer " + token);
-                        }
-                    }
-                }).build();
+                .setEndpoint(Constant.API_URL).setLogLevel(RestAdapter.LogLevel.FULL)
+                .setRequestInterceptor(new CustomRequestInterceptor(this)).build();
         API api = restAdapter.create(API.class);
-        String userid = mPref.getString(Constant.PREF_USER_ID, "");
         String name=edtName.getText().toString();
         String email=edtEmail.getText().toString();
-        api.update(new Data(name, email), userid, new Callback<Data>() {
+        api.updateUser(new User(name, email), userid, new Callback<User>() {
 
             @Override
-            public void success(Data data, retrofit.client.Response response) {
+            public void success(User user, retrofit.client.Response response) {
                 Toast.makeText(SettingActivity.this, "update success", Toast.LENGTH_SHORT).show();
             }
 
@@ -126,24 +136,17 @@ public class SettingActivity extends AppCompatActivity {
 //
     public void updatePassword(){
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(Constant.API_URL).setLogLevel(RestAdapter.LogLevel.FULL).setRequestInterceptor(new RequestInterceptor() {
-                    @Override
-                    public void intercept(RequestInterceptor.RequestFacade request) {
-                        if (mPref!=null) {
-                            String token = mPref.getString(Constant.PREF_TOKEN, "");
-                            request.addHeader("Authorization", "Bearer " + token);
-                        }
-                    }
-                }).build();
+                .setEndpoint(Constant.API_URL).setLogLevel(RestAdapter.LogLevel.FULL)
+                .setRequestInterceptor(new CustomRequestInterceptor(this)).build();
         API api = restAdapter.create(API.class);
-        String userid = mPref.getString(Constant.PREF_USER_ID, "");
         String email=edtEmail.getText().toString();
         String old_pass=edtOldpass.getText().toString();
         String new_pass=edtNewPass.getText().toString();
-        api.update(new Data(email,old_pass,new_pass),userid, new Callback<Data>() {
+        String name=edtName.getText().toString();
+        api.updateUser(new User(email,old_pass,new_pass,name),userid, new Callback<User>() {
 
             @Override
-            public void success(Data data, retrofit.client.Response response) {
+            public void success(User user, retrofit.client.Response response) {
                 Toast.makeText(SettingActivity.this, "update success", Toast.LENGTH_SHORT).show();
             }
 
@@ -163,15 +166,8 @@ public class SettingActivity extends AppCompatActivity {
 
     public void deleteAccount(){
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(Constant.API_URL).setLogLevel(RestAdapter.LogLevel.FULL).setRequestInterceptor(new RequestInterceptor() {
-                    @Override
-                    public void intercept(RequestInterceptor.RequestFacade request) {
-                        if (mPref != null) {
-                            String token = mPref.getString(Constant.PREF_TOKEN, "");
-                            request.addHeader("Authorization", "Bearer " + token);
-                        }
-                    }
-                }).build();
+                .setEndpoint(Constant.API_URL).setLogLevel(RestAdapter.LogLevel.FULL)
+                .setRequestInterceptor(new CustomRequestInterceptor(this)).build();
         API api = restAdapter.create(API.class);
         String userid = mPref.getString(Constant.PREF_USER_ID, "");
         api.deleteAccount(userid, new Callback<User>() {
@@ -190,5 +186,5 @@ public class SettingActivity extends AppCompatActivity {
         });
 
     }
-    
+
 }

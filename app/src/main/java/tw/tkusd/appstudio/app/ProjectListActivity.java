@@ -83,7 +83,7 @@ public class ProjectListActivity extends AppCompatActivity {
                         build();
         API api = restAdapter.create(API.class);
 
-        api.delete(mPref.getString(Constant.PREF_TOKEN, ""),new Callback<User>() {
+        api.deleteToken(mPref.getString(Constant.PREF_TOKEN, ""),new Callback<User>() {
 
             @Override
             public void success(User user, retrofit.client.Response response) {
