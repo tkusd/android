@@ -1,17 +1,25 @@
 package tw.tkusd.appstudio.app;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -22,19 +30,51 @@ import tw.tkusd.appstudio.util.RequestHelper;
 
 public class ProjectListActivity extends AppCompatActivity {
     public static final String TAG = ProjectListActivity.class.getSimpleName();
+    private List<Project> project ;
+    private RecyclerView mRecyclerView;
+    private Adapter adapter;
+
+    //private RestClient restclient;
+
+
 
     private RequestHelper mRequestHelper;
     private SharedPreferences mPref;
     String taketoken_id;
 
+
+    TextView txt;
+    private Context mContext;
+
+
+
+    @InjectView(R.id.user_id)
+    EditText inputUserID;
+
+    @InjectView(R.id.project_id)
+    EditText inputProjectID;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_list);
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        mPref = PreferenceManager.getDefaultSharedPreferences(this);
         ButterKnife.inject(this);
+
+
+
 
         mRequestHelper = RequestHelper.getInstance(this);
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
+        ProjectList();
+
+
+
     }
 
     @Override
@@ -43,6 +83,33 @@ public class ProjectListActivity extends AppCompatActivity {
 
         super.onDestroy();
     }
+
+    public void ProjectList() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(Constant.API_URL)
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .build();
+       API api = restAdapter.create(API.class);
+        String user_id = mPref.getString(Constant.PREF_USER_ID,"");
+
+        api.projects(user_id, new Callback<Project>() {
+
+
+            @Override
+            public void success(Project project, retrofit.client.Response response) {
+                Toast.makeText(ProjectListActivity.this,"get success",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+
+    }
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

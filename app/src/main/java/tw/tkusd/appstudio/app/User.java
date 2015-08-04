@@ -2,9 +2,12 @@ package tw.tkusd.appstudio.app;
 
 import com.google.gson.annotations.Expose;
 
+
 /**
  * Created by wenlin on 2015/7/23.
  */
+
+
 public class User {
     @Expose
     private String id;
