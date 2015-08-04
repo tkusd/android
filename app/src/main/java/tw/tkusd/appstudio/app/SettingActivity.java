@@ -20,7 +20,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
-import tw.tkusd.appstudio.util.RequestHelper;
 
 /**
  * Created by melon on 2015/7/28.
@@ -41,7 +40,6 @@ public class SettingActivity extends AppCompatActivity {
     Button btn_deleteAccount;
 
 
-    private RequestHelper mRequestHelper;
     private SharedPreferences mPref;
     public static final String TAG = SettingActivity.class.getSimpleName();
     private String userid;
@@ -52,7 +50,6 @@ public class SettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         ButterKnife.inject(this);
-        mRequestHelper = RequestHelper.getInstance(this);
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
         userid = mPref.getString(Constant.PREF_USER_ID, "");
         getUser();
@@ -80,12 +77,6 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        mRequestHelper.cancelAllRequests(TAG);
-        super.onDestroy();
     }
 
     @OnClick(R.id.btn_deleteAccount)
@@ -143,7 +134,7 @@ public class SettingActivity extends AppCompatActivity {
         String old_pass=edtOldpass.getText().toString();
         String new_pass=edtNewPass.getText().toString();
         String name=edtName.getText().toString();
-        api.updateUser(new User(email,old_pass,new_pass,name),userid, new Callback<User>() {
+        api.updateUser(new User(email, old_pass, new_pass, name), userid, new Callback<User>() {
 
             @Override
             public void success(User user, retrofit.client.Response response) {
@@ -155,7 +146,7 @@ public class SettingActivity extends AppCompatActivity {
                 String response_error;
                 User user = (User) error.getBodyAs(User.class);
                 response_error = user.geterror();
-                if(response_error.equals("1300")){
+                if (response_error.equals("1300")) {
                     edtOldpass.setError("invalid password");
                 }
             }

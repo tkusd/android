@@ -18,7 +18,6 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
-import tw.tkusd.appstudio.util.RequestHelper;
 
 /**
  * Created by melon on 2015/6/7.
@@ -35,7 +34,6 @@ public class LoginActivity extends AppCompatActivity{
     @InjectView(R.id.result)
     TextView textResult;
 
-    private RequestHelper mRequestHelper;
     private ProgressDialog pDialog;
     private SharedPreferences mPref;
 
@@ -45,14 +43,7 @@ public class LoginActivity extends AppCompatActivity{
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
 
-        mRequestHelper = RequestHelper.getInstance(this);
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        mRequestHelper.cancelAllRequests(TAG);
-        super.onDestroy();
     }
 
     private void showDialog() {

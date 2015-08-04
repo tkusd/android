@@ -18,12 +18,10 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
-import tw.tkusd.appstudio.util.RequestHelper;
 
 public class ProjectListActivity extends AppCompatActivity {
     public static final String TAG = ProjectListActivity.class.getSimpleName();
 
-    private RequestHelper mRequestHelper;
     private SharedPreferences mPref;
     String taketoken_id;
 
@@ -33,15 +31,7 @@ public class ProjectListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_project_list);
         ButterKnife.inject(this);
 
-        mRequestHelper = RequestHelper.getInstance(this);
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        mRequestHelper.cancelAllRequests(TAG);
-
-        super.onDestroy();
     }
 
     @Override
@@ -83,7 +73,7 @@ public class ProjectListActivity extends AppCompatActivity {
                         build();
         API api = restAdapter.create(API.class);
 
-        api.deleteToken(mPref.getString(Constant.PREF_TOKEN, ""),new Callback<User>() {
+        api.deleteToken(mPref.getString(Constant.PREF_TOKEN, ""), new Callback<User>() {
 
             @Override
             public void success(User user, retrofit.client.Response response) {
@@ -91,9 +81,10 @@ public class ProjectListActivity extends AppCompatActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
+
             @Override
             public void failure(RetrofitError error) {
-                if (error.getKind().equals(RetrofitError.Kind.NETWORK)){
+                if (error.getKind().equals(RetrofitError.Kind.NETWORK)) {
                     nonetdialog();
                 } else {
                     String response_error, response_message;

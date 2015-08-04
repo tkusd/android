@@ -23,7 +23,6 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
-import tw.tkusd.appstudio.util.RequestHelper;
 
 public class SignupActivity extends AppCompatActivity {
     public static final String TAG = SignupActivity.class.getSimpleName();
@@ -43,7 +42,6 @@ public class SignupActivity extends AppCompatActivity {
     @InjectView(R.id.result)
     TextView textResult;
 
-    private RequestHelper mRequestHelper;
     private ProgressDialog pDialog;
     private SharedPreferences mPref;
     private Context mContext;
@@ -54,7 +52,6 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.inject(this);
-        mRequestHelper = RequestHelper.getInstance(this);
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
         btnSendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,12 +71,6 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    @Override
-    protected void onDestroy() {
-        mRequestHelper.cancelAllRequests(TAG);
-        super.onDestroy();
     }
 
     public void signup() {
