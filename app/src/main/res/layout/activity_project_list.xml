@@ -1,6 +1,9 @@
-<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:andorid="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -19,7 +22,6 @@
 
 
 
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="fill_parent"
@@ -27,18 +29,7 @@
             android:layout_centerHorizontal="true" />
 
 
-        <TextView
-            android:id="@+id/user_id"
-            android:text="@string/user_id"
-            android:layout_width="match_parent"
-            android:layout_height="85dp" />
 
-        <TextView
-            android:id="@+id/project_id"
-            android:text="project_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.35" />
     <Button
         android:id="@+id/setting"
         android:layout_width="wrap_content"

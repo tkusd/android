@@ -1,7 +1,6 @@
 package tw.tkusd.appstudio.app;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,10 +11,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -30,47 +28,40 @@ import tw.tkusd.appstudio.R;
 public class ProjectListActivity extends AppCompatActivity {
     public static final String TAG = ProjectListActivity.class.getSimpleName();
     private List<Project> project ;
-    private RecyclerView mRecyclerView;
-    private Adapter adapter;
-
-    //private RestClient restclient;
-
-
+    private ProjectListAdapter adapter;
 
     private SharedPreferences mPref;
-    String taketoken_id;
 
+    @InjectView(R.id.recycler_view)
+    RecyclerView mRecyclerView;
 
-    TextView txt;
-    private Context mContext;
-
-
-
-    @InjectView(R.id.user_id)
-    EditText inputUserID;
-
-    @InjectView(R.id.project_id)
-    EditText inputProjectID;
+    private ProjectListAdapter mAdapter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_list);
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        mPref = PreferenceManager.getDefaultSharedPreferences(this);
         ButterKnife.inject(this);
+
+        project = new ArrayList<>();
+
+
+        mAdapter = new ProjectListAdapter(project);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+
+
+
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
+
         ProjectList();
-
-
-
     }
 
     public void ProjectList() {
+        //mRecyclerView.setAdapter(adapter);
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(Constant.API_URL)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
@@ -78,12 +69,14 @@ public class ProjectListActivity extends AppCompatActivity {
        API api = restAdapter.create(API.class);
         String user_id = mPref.getString(Constant.PREF_USER_ID,"");
 
-        api.projects(user_id, new Callback<Project>() {
+        api.projects(user_id, new Callback<ProjectList>() {
 
 
             @Override
-            public void success(Project project, retrofit.client.Response response) {
+            public void success(ProjectList projectList , retrofit.client.Response response) {
                 Toast.makeText(ProjectListActivity.this,"get success",Toast.LENGTH_SHORT).show();
+                project.addAll(projectList.getData());
+                mAdapter.notifyDataSetChanged();
             }
 
             @Override

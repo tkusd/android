@@ -21,13 +21,13 @@ public interface API {
     @DELETE("/v1/tokens/{tokenid}")
     void delete(@Path("tokenid") String tokenid,Callback<User> callback);
     @GET("/v1/users/{user_id}/projects")
-    void projects (@Path("user_id") String userid, Callback<Project> callback);
+    void projects (@Path("user_id") String userid, Callback<ProjectList> callback);
     void deleteToken(@Path("tokenid") String tokenid,Callback<User> callback);
     @DELETE("/v1/users/{userid}")
     void deleteAccount(@Path("userid") String userid,Callback<User> callback);
     @PUT("/v1/users/{userid}")
     void updateUser(@Body User user,@Path("userid") String userid,Callback<User> callback);
-    @GET("/v1/users/{userid}")
+    @GET("/v1/users/{userid}/projects")
     void getUser(@Path("userid") String userid,Callback<User> callback);
 
 }
