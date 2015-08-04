@@ -64,6 +64,11 @@ public class ProjectListActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    @OnClick(R.id.Web1)
+    void Webview() {
+        Intent intent = new Intent(ProjectListActivity.this, Webvieww.class);
+        startActivity(intent);
+    }
 
     @OnClick(R.id.logout)
     void onLogoutClick() {

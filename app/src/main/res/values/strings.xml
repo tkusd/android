@@ -14,5 +14,7 @@
 
     <string name="login">login</string>
     <string name="title_activity_project_list">ProjectListActivity</string>
+    <string name="title_activity_webview">Webview</string>
+    <string name="title_activity_webvieww">Webvieww</string>
 
 </resources>

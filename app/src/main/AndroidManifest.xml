@@ -26,6 +26,10 @@
             android:name=".app.ProjectListActivity"
             android:label="@string/title_activity_project_list" >
         </activity>
+        <activity
+            android:name=".app.Webvieww"
+            android:label="@string/title_activity_webvieww" >
+        </activity>
     </application>
 
 </manifest>

@@ -116,7 +116,7 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     @OnClick(R.id.btn_signup)
-    void signup() {
+    void webview() {
         Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
         startActivity(intent);
     }
