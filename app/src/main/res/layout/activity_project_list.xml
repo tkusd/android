@@ -39,15 +39,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.35" />
-
-
-
-
-
-
-
-
-
-
+    <Button
+        android:id="@+id/setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Setting"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
 </LinearLayout>

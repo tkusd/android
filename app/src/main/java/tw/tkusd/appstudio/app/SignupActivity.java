@@ -23,7 +23,6 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
-import tw.tkusd.appstudio.util.RequestHelper;
 
 public class SignupActivity extends AppCompatActivity {
     public static final String TAG = SignupActivity.class.getSimpleName();
@@ -43,7 +42,6 @@ public class SignupActivity extends AppCompatActivity {
     @InjectView(R.id.result)
     TextView textResult;
 
-    private RequestHelper mRequestHelper;
     private ProgressDialog pDialog;
     private SharedPreferences mPref;
     private Context mContext;
@@ -54,7 +52,6 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.inject(this);
-        mRequestHelper = RequestHelper.getInstance(this);
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
         btnSendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,12 +73,6 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onDestroy() {
-        mRequestHelper.cancelAllRequests(TAG);
-        super.onDestroy();
-    }
-
     public void signup() {
         showDialog();
         RestAdapter restAdapter = new RestAdapter.Builder()
@@ -90,14 +81,20 @@ public class SignupActivity extends AppCompatActivity {
                         build();
         API api = restAdapter.create(API.class);
 
-        String name=inputName.getText().toString();
-        String email=inputEmail.getText().toString();
+        final String name=inputName.getText().toString();
+        final String email=inputEmail.getText().toString();
         String password=inputPassword.getText().toString();
         api.signup(new User(name, email, password), new Callback<User>() {
 
             @Override
             public void success(User user, retrofit.client.Response response) {
-                token();
+                mPref = PreferenceManager.getDefaultSharedPreferences(SignupActivity.this);
+                SharedPreferences.Editor editor = mPref.edit();
+                editor.putString(Constant.PREF_NAME, name);
+                editor.putString(Constant.PREF_EMAIL, email);
+                editor.apply();
+                login();
+
             }
 
             @Override
@@ -120,45 +117,37 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    public void token() {
+    public void login() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(Constant.API_URL).
                         setLogLevel(RestAdapter.LogLevel.FULL).
                         build();
         API api = restAdapter.create(API.class);
-
         String email = inputEmail.getText().toString();
-        String password = inputPassword.getText().toString();
-        api.token(new User(email, password), new Callback<User>() {
-
+        final String password = inputPassword.getText().toString();
+        api.login(new Token(email, password), new Callback<Token>() {
             @Override
-            public void success(User user, retrofit.client.Response response) {
-                String gettoken = user.getId();
-                String getuserid = user.getUserId();
-                //sharedpreference----------------------------------------------------------
+            public void success(Token token, retrofit.client.Response response) {
+                String gettoken = token.getToken();
+                String getuserid = token.getUser_id();
+
                 mPref = PreferenceManager.getDefaultSharedPreferences(SignupActivity.this);
                 SharedPreferences.Editor editor = mPref.edit();
                 editor.putString(Constant.PREF_TOKEN, gettoken);
                 editor.putString(Constant.PREF_USER_ID, getuserid);
                 editor.apply();
-                //-------------------------------------------------------------------------------
-                hideDialog();
-                Toast.makeText(SignupActivity.this, "sing up seccess", Toast.LENGTH_SHORT).show();
-                //跳轉start
+                Toast.makeText(SignupActivity.this, "註冊成功", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(SignupActivity.this, ProjectListActivity.class);
                 startActivity(intent);
-                //跳轉end
-
             }
-
             @Override
             public void failure(RetrofitError error) {
                 hideDialog();
-                textResult.setText("get_token_error");
+                textResult.setText(error.toString());
             }
         });
-
     }
+
 
     //  沒網路時產生的dialog
     private void nonetdialog(){

@@ -26,7 +26,6 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
-import tw.tkusd.appstudio.util.RequestHelper;
 
 public class ProjectListActivity extends AppCompatActivity {
     public static final String TAG = ProjectListActivity.class.getSimpleName();
@@ -38,7 +37,6 @@ public class ProjectListActivity extends AppCompatActivity {
 
 
 
-    private RequestHelper mRequestHelper;
     private SharedPreferences mPref;
     String taketoken_id;
 
@@ -65,23 +63,11 @@ public class ProjectListActivity extends AppCompatActivity {
 
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
         ButterKnife.inject(this);
-
-
-
-
-        mRequestHelper = RequestHelper.getInstance(this);
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
         ProjectList();
 
 
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        mRequestHelper.cancelAllRequests(TAG);
-
-        super.onDestroy();
     }
 
     public void ProjectList() {
@@ -137,8 +123,12 @@ public class ProjectListActivity extends AppCompatActivity {
         deletetoken();
     }
 
-    public void loadPreference() {
+    @OnClick(R.id.setting)
+    void onSettingClick() {
+        Intent intent=new Intent(ProjectListActivity.this,SettingActivity.class);
+        startActivity(intent);
     }
+
     public void deletetoken(){
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(Constant.API_URL).
@@ -146,7 +136,7 @@ public class ProjectListActivity extends AppCompatActivity {
                         build();
         API api = restAdapter.create(API.class);
 
-        api.delete(mPref.getString(Constant.PREF_TOKEN, ""),new Callback<User>() {
+        api.deleteToken(mPref.getString(Constant.PREF_TOKEN, ""), new Callback<User>() {
 
             @Override
             public void success(User user, retrofit.client.Response response) {
@@ -154,9 +144,10 @@ public class ProjectListActivity extends AppCompatActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
+
             @Override
             public void failure(RetrofitError error) {
-                if (error.getKind().equals(RetrofitError.Kind.NETWORK)){
+                if (error.getKind().equals(RetrofitError.Kind.NETWORK)) {
                     nonetdialog();
                 } else {
                     String response_error, response_message;
