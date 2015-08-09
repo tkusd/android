@@ -10,7 +10,6 @@ import java.util.List;
 
 import tw.tkusd.appstudio.R;
 
-
 /**
  * Created by user on 2015/7/10.
  */
@@ -33,8 +32,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     @Override
     public void onBindViewHolder(ProjectListAdapter.ViewHolder holder, int i) {
         Project project = ListProject.get(i);
-        holder.user_id.setText(project.getUserId());
-
+        holder.user_id.setText(project.getProjectText());
     }
 
     @Override
@@ -45,11 +43,27 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     protected class ViewHolder extends RecyclerView.ViewHolder{
 
         public TextView user_id;
-        public TextView project_id;
+        //public TextView project_id;
 
         public ViewHolder(View itemView) {
             super(itemView);
+
             user_id = (TextView) itemView.findViewById(R.id.user_id);
-            project_id = (TextView) itemView.findViewById(R.id.project_id);
+
+
+
+
+            user_id.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //work
+                }
+            });
+
+            //project_id = (TextView) itemView.findViewById(R.id.project_id);
         }
-    }}
+    }
+
+
+
+}

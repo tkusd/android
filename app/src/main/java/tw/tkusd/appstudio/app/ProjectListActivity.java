@@ -38,6 +38,7 @@ public class ProjectListActivity extends AppCompatActivity {
     private ProjectListAdapter mAdapter;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,14 +47,11 @@ public class ProjectListActivity extends AppCompatActivity {
 
         project = new ArrayList<>();
 
-
         mAdapter = new ProjectListAdapter(project);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
-
-
 
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -83,6 +81,7 @@ public class ProjectListActivity extends AppCompatActivity {
             public void failure(RetrofitError error) {
 
             }
+
         });
 
     }
