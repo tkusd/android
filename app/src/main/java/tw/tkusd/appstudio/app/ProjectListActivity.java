@@ -21,15 +21,11 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
-import tw.tkusd.appstudio.util.RequestHelper;
 
 public class ProjectListActivity extends AppCompatActivity {
     public static final String TAG = ProjectListActivity.class.getSimpleName();
 
-    @InjectView(R.id.textView)
-    TextView text;
 
-    private RequestHelper mRequestHelper;
     private SharedPreferences mPref;
     String taketoken_id;
 
@@ -43,15 +39,7 @@ public class ProjectListActivity extends AppCompatActivity {
 
         ButterKnife.inject(this);
 
-        mRequestHelper = RequestHelper.getInstance(this);
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        mRequestHelper.cancelAllRequests(TAG);
-
-        super.onDestroy();
     }
 
     @Override
@@ -67,14 +55,13 @@ public class ProjectListActivity extends AppCompatActivity {
 
             switch (menuItem.getItemId()) {
                 case R.id.action_setting:
-                    text.setText("Click setting");
-
+                    Intent intent=new Intent(ProjectListActivity.this,SettingActivity.class);
+                    startActivity(intent);
                     break;
                 case R.id.action_logout:
-                    text.setText("Click logout");
+                    checklogout();
                     break;
             }
-
             return true;
         }
     };
@@ -93,13 +80,6 @@ public class ProjectListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @OnClick(R.id.logout)
-    void onLogoutClick() {
-        deletetoken();
-    }
-
-    public void loadPreference() {
-    }
     public void deletetoken(){
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(Constant.API_URL).
@@ -107,7 +87,7 @@ public class ProjectListActivity extends AppCompatActivity {
                         build();
         API api = restAdapter.create(API.class);
 
-        api.delete(mPref.getString(Constant.PREF_TOKEN, ""),new Callback<User>() {
+        api.deleteToken(mPref.getString(Constant.PREF_TOKEN, ""), new Callback<User>() {
 
             @Override
             public void success(User user, retrofit.client.Response response) {
@@ -115,9 +95,10 @@ public class ProjectListActivity extends AppCompatActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
+
             @Override
             public void failure(RetrofitError error) {
-                if (error.getKind().equals(RetrofitError.Kind.NETWORK)){
+                if (error.getKind().equals(RetrofitError.Kind.NETWORK)) {
                     nonetdialog();
                 } else {
                     String response_error, response_message;
@@ -128,6 +109,18 @@ public class ProjectListActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void checklogout(){
+        new AlertDialog.Builder(this).setTitle("message").setMessage("sure to leave?")
+                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        deletetoken();
+                    }
+                })
+                .setNegativeButton("no",null)
+                .show();
+
     }
     private void nonetdialog(){
         AlertDialog alertDialog = new AlertDialog.Builder(ProjectListActivity.this).create();

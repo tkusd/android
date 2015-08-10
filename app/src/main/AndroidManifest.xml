@@ -3,6 +3,7 @@
     package="tw.tkusd.appstudio" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -27,6 +28,11 @@
             android:name=".app.ProjectListActivity"
             android:theme="@style/AppNoActionBar"
             android:label="@string/title_activity_project_list" >
+        </activity>
+        <activity
+            android:name=".app.SettingActivity"
+            android:theme="@style/AppTheme"
+            android:label="Setting" >
         </activity>
     </application>
 

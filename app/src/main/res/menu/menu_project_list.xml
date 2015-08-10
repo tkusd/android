@@ -6,10 +6,10 @@
         android:id="@+id/action_setting"
         android:title="setting"
         android:icon="@drawable/ic_action_gear"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
     <item
         android:id="@+id/action_logout"
         android:title="logout"
         android:icon="@drawable/ic_action_exit"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 </menu> 
