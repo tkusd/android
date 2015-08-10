@@ -8,21 +8,16 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
 import tw.tkusd.appstudio.Constant;
 import tw.tkusd.appstudio.R;
-import tw.tkusd.appstudio.network.APIObjectRequest;
-import tw.tkusd.appstudio.util.RequestHelper;
 
 /**
  * Created by melon on 2015/6/7.
@@ -39,7 +34,6 @@ public class LoginActivity extends AppCompatActivity{
     @InjectView(R.id.result)
     TextView textResult;
 
-    private RequestHelper mRequestHelper;
     private ProgressDialog pDialog;
     private SharedPreferences mPref;
 
@@ -49,14 +43,7 @@ public class LoginActivity extends AppCompatActivity{
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
 
-        mRequestHelper = RequestHelper.getInstance(this);
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        mRequestHelper.cancelAllRequests(TAG);
-        super.onDestroy();
     }
 
     private void showDialog() {
@@ -77,42 +64,52 @@ public class LoginActivity extends AppCompatActivity{
     @OnClick(R.id.btn_send_request)
     void login() {
         showDialog();
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(Constant.API_URL).
+                        setLogLevel(RestAdapter.LogLevel.FULL).
+                        build();
+        API api = restAdapter.create(API.class);
+        String email = inputEmail.getText().toString();
+        final String password = inputPassword.getText().toString();
+        api.login(new Token(email, password), new Callback<Token>() {
+            @Override
+            public void success(Token token, retrofit.client.Response response) {
+                String gettoken = token.getToken();
+                String getuserid = token.getUser_id();
 
-        try {
-            JSONObject obj = new JSONObject();
-            obj.put("email", inputEmail.getText());
-            obj.put("password", inputPassword.getText());
+                mPref = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                SharedPreferences.Editor editor = mPref.edit();
+                editor.putString(Constant.PREF_TOKEN, gettoken);
+                editor.putString(Constant.PREF_USER_ID, getuserid);
+                editor.apply();
 
-            APIObjectRequest req = new APIObjectRequest(this, Request.Method.POST, "http://tkusd.zespia.tw/v1/tokens", obj, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    SharedPreferences.Editor editor = mPref.edit();
-
-                    try {
-                        editor.putString(Constant.PREF_TOKEN, response.getString("id"));
-                        editor.putString(Constant.PREF_USER_ID, response.getString("user_id"));
-                        editor.apply();
-
-                        hideDialog();
-                        Intent intent = new Intent(LoginActivity.this, ProjectListActivity.class);
-                        startActivity(intent);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        hideDialog();
-                    }
+                hideDialog();
+                Toast.makeText(LoginActivity.this, "login success", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, ProjectListActivity.class);
+                startActivity(intent);
+            }
+            @Override
+            public void failure(RetrofitError error) {
+                hideDialog();
+                String response_error;
+                User user = (User) error.getBodyAs(User.class);
+                response_error = user.geterror();
+                if (response_error.equals("1100")) {
+                    inputEmail.setError("invalid email");
+                    inputPassword.setError("invalid password");
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    error.printStackTrace();
-                    hideDialog();
+                if(response_error.equals("1300")){
+                    inputPassword.setError("invalid password");
                 }
-            });
+                if(response_error.equals("1200")){
+                    inputEmail.setError("email hasn't been used");
+                }
+                if(response_error.equals("1104")){
+                    inputEmail.setError("invalid email");
+                }
 
-            mRequestHelper.addToRequestQueue(req, TAG);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            }
+        });
     }
 
     @OnClick(R.id.btn_signup)
