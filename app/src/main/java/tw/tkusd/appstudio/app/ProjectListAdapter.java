@@ -1,5 +1,6 @@
 package tw.tkusd.appstudio.app;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,57 +14,37 @@ import tw.tkusd.appstudio.R;
 /**
  * Created by user on 2015/7/10.
  */
-public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder>{
+public class ProjectListAdapter extends RecyclerView.Adapter<ViewHolder>{
 
     private List<Project> ListProject;
+    private Context context;
 
-
-    public ProjectListAdapter(List<Project> ListProject) {
+    public ProjectListAdapter(Context context,List<Project> ListProject) {
         this.ListProject=ListProject;
+        this.context=context;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewtype) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list, viewGroup, false);
-        ViewHolder view = new ViewHolder(v);
-        return view;
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
     }
 
     @Override
-    public void onBindViewHolder(ProjectListAdapter.ViewHolder holder, int i) {
-        Project project = ListProject.get(i);
-        holder.user_id.setText(project.getProjectText());
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
+        View itemView =  LayoutInflater.from(context).
+                inflate(R.layout.list, parent, false);
+        return new ViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        Project project = ListProject.get(position);
+        holder.title.setText(project.gettitle());
     }
 
     @Override
     public int getItemCount() {
         return ListProject.size();
     }
-
-    protected class ViewHolder extends RecyclerView.ViewHolder{
-
-        public TextView user_id;
-        //public TextView project_id;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-
-            user_id = (TextView) itemView.findViewById(R.id.user_id);
-
-
-
-
-            user_id.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //work
-                }
-            });
-
-            //project_id = (TextView) itemView.findViewById(R.id.project_id);
-        }
-    }
-
-
 
 }

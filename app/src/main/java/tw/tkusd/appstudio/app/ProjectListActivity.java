@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -28,7 +29,6 @@ import tw.tkusd.appstudio.R;
 public class ProjectListActivity extends AppCompatActivity {
     public static final String TAG = ProjectListActivity.class.getSimpleName();
     private List<Project> project ;
-    private ProjectListAdapter adapter;
 
     private SharedPreferences mPref;
 
@@ -45,17 +45,33 @@ public class ProjectListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_project_list);
         ButterKnife.inject(this);
 
+        mPref = PreferenceManager.getDefaultSharedPreferences(this);
+        ProjectList();
+
         project = new ArrayList<>();
 
-        mAdapter = new ProjectListAdapter(project);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(linearLayoutManager);
+
+        mAdapter=new ProjectListAdapter(this,project);
+
         mRecyclerView.setAdapter(mAdapter);
 
-        mPref = PreferenceManager.getDefaultSharedPreferences(this);
+        mRecyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(this, mRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Toast.makeText(ProjectListActivity.this, project.get(position).gettitle(), Toast.LENGTH_SHORT).show();
+                    }
 
-        ProjectList();
+                    @Override
+                    public void onItemLongClick(View view, int position) {
+                        //do nothing
+                    }
+                })
+        );
+
     }
 
     public void ProjectList() {
@@ -85,9 +101,6 @@ public class ProjectListActivity extends AppCompatActivity {
         });
 
     }
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
