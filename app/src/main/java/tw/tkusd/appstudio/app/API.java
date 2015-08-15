@@ -18,8 +18,7 @@ public interface API {
     void signup(@Body User user,Callback<User> callback);
     @POST("/v1/tokens")
     void login(@Body Token token ,Callback<Token> callback);
-    @GET("/v1/users/{user_id}/projects")
-    void projects (@Path("user_id") String userid, Callback<ProjectList> callback);
+    @DELETE("/v1/tokens/{tokenid}")
     void deleteToken(@Path("tokenid") String tokenid,Callback<User> callback);
     @DELETE("/v1/users/{userid}")
     void deleteAccount(@Path("userid") String userid,Callback<User> callback);
@@ -27,5 +26,7 @@ public interface API {
     void updateUser(@Body User user,@Path("userid") String userid,Callback<User> callback);
     @GET("/v1/users/{userid}")
     void getUser(@Path("userid") String userid,Callback<User> callback);
+    @GET("/v1/users/{user_id}/projects")
+    void projects (@Path("user_id") String userid, Callback<ProjectList> callback);
 
 }

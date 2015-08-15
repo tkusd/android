@@ -14,9 +14,7 @@
 
     <string name="login">login</string>
     <string name="title_activity_project_list">ProjectListActivity</string>
-    <string name="user_id">user_id</string>
-    <string name="project_id">project_id </string>
-    <string name="projects">project_id </string>
+
     />
 
 </resources>
