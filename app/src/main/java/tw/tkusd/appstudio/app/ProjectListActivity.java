@@ -36,9 +36,7 @@ public class ProjectListActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
 
     private ProjectListAdapter mAdapter;
-
-
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +44,7 @@ public class ProjectListActivity extends AppCompatActivity {
         ButterKnife.inject(this);
 
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
-        ProjectList();
+        getList();
 
         project = new ArrayList<>();
 
@@ -67,15 +65,14 @@ public class ProjectListActivity extends AppCompatActivity {
 
                     @Override
                     public void onItemLongClick(View view, int position) {
-                        //do nothing
+                        // do nothing
                     }
                 })
         );
 
     }
 
-    public void ProjectList() {
-        //mRecyclerView.setAdapter(adapter);
+    public void getList() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(Constant.API_URL)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
@@ -85,16 +82,19 @@ public class ProjectListActivity extends AppCompatActivity {
 
         api.projects(user_id, new Callback<ProjectList>() {
 
-
             @Override
             public void success(ProjectList projectList , retrofit.client.Response response) {
-                Toast.makeText(ProjectListActivity.this,"get success",Toast.LENGTH_SHORT).show();
                 project.addAll(projectList.getData());
                 mAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void failure(RetrofitError error) {
+                String response_error, response_message;
+                User user = (User) error.getBodyAs(User.class);
+                response_error = user.geterror();
+                response_message = user.getmessage();
+                Toast.makeText(ProjectListActivity.this, "error:" + response_error + ",message:" + response_message, Toast.LENGTH_SHORT).show();
 
             }
 

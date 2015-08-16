@@ -16,9 +16,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
     public ViewHolder(View itemView) {
         super(itemView);
-        itemView.setClickable(true);
         title = (TextView) itemView.findViewById(R.id.rowtitle);
-
     }
 
 }

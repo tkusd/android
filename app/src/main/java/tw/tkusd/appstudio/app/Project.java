@@ -8,7 +8,7 @@ import com.google.gson.annotations.Expose;
  */
 public class Project {
     @Expose
-       private String title;
+    private String title;
 
     public Project(String title){
         this.title = title;
