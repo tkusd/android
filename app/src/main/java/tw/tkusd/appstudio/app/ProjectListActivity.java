@@ -36,7 +36,7 @@ public class ProjectListActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
 
     private ProjectListAdapter mAdapter;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +80,7 @@ public class ProjectListActivity extends AppCompatActivity {
        API api = restAdapter.create(API.class);
         String user_id = mPref.getString(Constant.PREF_USER_ID,"");
 
-        api.projects(user_id, new Callback<ProjectList>() {
+        api.getlist(user_id, new Callback<ProjectList>() {
 
             @Override
             public void success(ProjectList projectList , retrofit.client.Response response) {

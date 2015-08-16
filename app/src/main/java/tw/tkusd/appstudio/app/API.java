@@ -27,6 +27,6 @@ public interface API {
     @GET("/v1/users/{userid}")
     void getUser(@Path("userid") String userid,Callback<User> callback);
     @GET("/v1/users/{user_id}/projects")
-    void projects (@Path("user_id") String userid, Callback<ProjectList> callback);
+    void getlist(@Path("user_id") String userid, Callback<ProjectList> callback);
 
 }
