@@ -7,11 +7,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -22,6 +25,7 @@ import tw.tkusd.appstudio.R;
 public class ProjectListActivity extends AppCompatActivity {
     public static final String TAG = ProjectListActivity.class.getSimpleName();
 
+
     private SharedPreferences mPref;
     String taketoken_id;
 
@@ -29,6 +33,10 @@ public class ProjectListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_list);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setOnMenuItemClickListener(onMenuItemClick);
+
         ButterKnife.inject(this);
 
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -41,6 +49,23 @@ public class ProjectListActivity extends AppCompatActivity {
         return true;
     }
 
+    private Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+
+            switch (menuItem.getItemId()) {
+                case R.id.action_setting:
+                    Intent intent=new Intent(ProjectListActivity.this,SettingActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.action_logout:
+                    checklogout();
+                    break;
+            }
+            return true;
+        }
+    };
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -49,21 +74,10 @@ public class ProjectListActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_setting) {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @OnClick(R.id.logout)
-    void onLogoutClick() {
-        deletetoken();
-    }
-
-    @OnClick(R.id.setting)
-    void onSettingClick() {
-        Intent intent=new Intent(ProjectListActivity.this,SettingActivity.class);
-        startActivity(intent);
     }
 
     public void deletetoken(){
@@ -95,6 +109,18 @@ public class ProjectListActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void checklogout(){
+        new AlertDialog.Builder(this).setTitle("message").setMessage("sure to leave?")
+                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        deletetoken();
+                    }
+                })
+                .setNegativeButton("no",null)
+                .show();
+
     }
     private void nonetdialog(){
         AlertDialog alertDialog = new AlertDialog.Builder(ProjectListActivity.this).create();
