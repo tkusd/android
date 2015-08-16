@@ -22,7 +22,7 @@ android {
 
             // Default proguard files
             proguardFile 'proguard-project.pro'
-            proguardFiles getDefaultProguardFile('proguard-android.txt')
+            proguardFile getDefaultProguardFile('proguard-android.txt')
         }
     }
 }
