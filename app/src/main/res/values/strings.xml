@@ -15,4 +15,6 @@
     <string name="login">login</string>
     <string name="title_activity_project_list">ProjectListActivity</string>
 
+    />
+
 </resources>

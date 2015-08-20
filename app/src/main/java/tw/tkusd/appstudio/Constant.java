@@ -7,3 +7,5 @@ public class Constant {
     public static final String PREF_NAME="name";
     public static final String PREF_EMAIL="email";
 }
+
+
