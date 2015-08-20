@@ -31,8 +31,11 @@
         </activity>
         <activity
             android:name=".app.SettingActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/CustomActionBarTheme"
             android:label="Setting" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".app.ProjectListActivity" />
         </activity>
     </application>
 

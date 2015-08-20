@@ -71,6 +71,16 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
         });
+        textResult.setClickable(true);
+        textResult.setFocusable(true);
+        textResult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                startActivity(intent);
+
+                 }
+        });
     }
 
     public void signup() {

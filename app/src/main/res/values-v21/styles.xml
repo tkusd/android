@@ -4,4 +4,30 @@
     <style name="AppNoActionBar" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
+
+
+
+    <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar">
+        <item name="android:titleTextStyle">@style/TitleTextStyle</item>
+        <item name="android:background">@color/primary</item>
+        <item name="android:backgroundStacked">#000000</item>
+        <item name="android:backgroundSplit">#000000</item>
+
+        <!-- Support library compatibility -->
+        <item name="titleTextStyle">@style/TitleTextStyle</item>
+        <item name="background">@drawable/ff</item>
+        <item name="backgroundStacked">#000000</item>
+        <item name="backgroundSplit">#000000</item>
+    </style>
+
+    <style name="CustomActionBarTheme" parent="android:Theme.Material.Light">
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/TabTextStyle</item>
+        <item name="android:actionMenuTextColor">#000000</item>
+
+        <!-- Support library compatibility -->
+        <item name="actionBarStyle">@style/MyActionBar</item>
+        <item name="actionBarTabTextStyle">@style/TabTextStyle</item>
+        <item name="actionMenuTextColor">#000000</item>
+    </style>
 </resources>
