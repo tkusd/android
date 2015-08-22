@@ -1,8 +1,9 @@
 
 <resources>
-    <color name="primary">#ffffb500</color>
+    <color name="primary">#ff61d7ff</color>
 
     <color name="text_white">#ffffff</color>
-    <color name="light">#800080</color>
-    <color name="accent">#FF0000</color>
+    <color name="text_hint">#9999FF</color>
+    <color name="text_color">#ff1760a3</color>
+    <color name="btn_color">#0f3355</color>
 </resources>

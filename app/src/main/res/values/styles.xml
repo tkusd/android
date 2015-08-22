@@ -8,9 +8,9 @@
     </style>
 
     <style name="Theme.App.Base" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorControlNormal">#ffffff</item>
-        <item name="colorControlActivated">#ffffff</item>
-        <item name="colorControlHighlight">#FF9966</item>
+        <item name="colorControlNormal">#27917f</item>
+        <item name="colorControlActivated">#4dfbde</item>
+        <item name="colorControlHighlight">#4dfbde</item>
     </style>
 
     <style name="CustomActionBarTheme"
@@ -65,6 +65,11 @@
         <item name="android:background">@color/primary</item>
         <item name="android:textColorPrimary">@color/text_white</item>
         <item name="android:selectedWeekBackgroundColor">#000000</item>
+    </style>
+
+
+    <style name="floatlabelededittext">
+        <item name="android:textColor">@color/text_white</item>
     </style>
 
 </resources>
