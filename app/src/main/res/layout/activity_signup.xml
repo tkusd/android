@@ -1,18 +1,18 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    xmlns:float="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background"
     android:fillViewport="true">
 
 <LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:paddingLeft="30dp"
     android:paddingRight="30dp"
-    android:paddingTop="120dp"
-    android:background="@drawable/b2"
+    android:paddingTop="80dp"
+    android:background="@drawable/background"
     >
 
     <com.wrapp.floatlabelededittext.FloatLabeledEditText
@@ -23,13 +23,14 @@
 
     <EditText
         android:id="@+id/name"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:hint="@string/label_name"
         android:textColorHint="@color/text_hint"
         android:layout_width="match_parent"
-        android:background="@drawable/edit"
-        android:layout_height="32dp"
-        android:paddingLeft="10dp"
-        android:hint="@string/label_name"
-        android:textColor="@color/text_color"
+        android:layout_height="40dp"
+        android:background="@drawable/edittext"
+        android:textColor="@color/text_blue"
         android:linksClickable="false" />
 
     </com.wrapp.floatlabelededittext.FloatLabeledEditText>
@@ -37,43 +38,42 @@
     <com.wrapp.floatlabelededittext.FloatLabeledEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         app:fletTextAppearance="@style/floatlabelededittext"
         app:fletPaddingBottom="5dp">
 
         <EditText
             android:id="@+id/email"
             android:layout_below="@+id/name"
-            android:background="@drawable/edit"
-            android:theme="@style/Theme.App.Base"
+            android:background="@drawable/edittext"
             android:layout_width="match_parent"
-            android:layout_height="32dp"
+            android:layout_height="40dp"
             android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:textColorHint="@color/text_hint"
             android:hint="@string/label_email"
             android:inputType="textEmailAddress"
-            android:textColor="@color/text_color" />
+            android:textColor="@color/text_blue" />
 
     </com.wrapp.floatlabelededittext.FloatLabeledEditText>
 
     <com.wrapp.floatlabelededittext.FloatLabeledEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         app:fletTextAppearance="@style/floatlabelededittext"
         app:fletPaddingBottom="5dp">
 
         <EditText
             android:id="@+id/password"
-            android:background="@drawable/edit"
-            android:theme="@style/Theme.App.Base"
-            android:layout_width="match_parent"
-            android:layout_height="32dp"
             android:paddingLeft="10dp"
-            android:textColorHint="@color/text_hint"
+            android:paddingRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/edittext"
             android:hint="@string/label_password"
+            android:textColor="@color/text_blue"
+            android:textColorHint="@color/text_hint"
             android:inputType="textPassword"
-            android:textColor="@color/text_color" />
+            />
 
     </com.wrapp.floatlabelededittext.FloatLabeledEditText>
 
@@ -84,14 +84,13 @@
         android:layout_marginTop="30dp"
         android:layout_gravity="center"
         android:text="@string/signup"
-        android:textColor="#ffffff"
+        android:textColor="@color/text_white"
         android:background="@drawable/btnshape"
-        android:shadowColor="#ff5cef99"
 
-        />
+        android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/result"
+        android:id="@+id/login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Already have an account?"

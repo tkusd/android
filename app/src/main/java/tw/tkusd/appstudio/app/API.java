@@ -8,6 +8,7 @@ import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
 
+
 /**
  * Created by wenlin on 2015/7/23.
  */
@@ -25,5 +26,7 @@ public interface API {
     void updateUser(@Body User user,@Path("userid") String userid,Callback<User> callback);
     @GET("/v1/users/{userid}")
     void getUser(@Path("userid") String userid,Callback<User> callback);
+    @GET("/v1/users/{user_id}/projects")
+    void getlist(@Path("user_id") String userid, Callback<ProjectList> callback);
 
 }

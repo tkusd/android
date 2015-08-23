@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,8 +32,10 @@ public class LoginActivity extends AppCompatActivity{
     @InjectView(R.id.password)
     EditText inputPassword;
 
-    @InjectView(R.id.result)
-    TextView textResult;
+    @InjectView(R.id.text_signup)
+    TextView text_signup;
+    @InjectView(R.id.text_help)
+    TextView text_help;
 
     private ProgressDialog pDialog;
     private SharedPreferences mPref;
@@ -42,8 +45,17 @@ public class LoginActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
-
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        text_signup.setClickable(true);
+        text_signup.setFocusable(true);
+        text_signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void showDialog() {
@@ -112,9 +124,6 @@ public class LoginActivity extends AppCompatActivity{
         });
     }
 
-    @OnClick(R.id.btn_signup)
-    void signup() {
-        Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
-        startActivity(intent);
-    }
+
+
 }

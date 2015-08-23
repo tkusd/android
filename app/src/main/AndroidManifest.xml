@@ -23,6 +23,7 @@
             android:name=".app.SignupActivity"
             android:theme="@style/AppNoActionBar"
             android:label="Sign up" >
+
         </activity>
         <activity
             android:name=".app.ProjectListActivity"
@@ -38,5 +39,6 @@
                 android:value=".app.ProjectListActivity" />
         </activity>
     </application>
+
 
 </manifest>

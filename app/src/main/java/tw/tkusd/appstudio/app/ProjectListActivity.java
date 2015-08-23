@@ -7,11 +7,19 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.View;
+
+import android.support.v7.widget.Toolbar;
+
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -24,10 +32,15 @@ import tw.tkusd.appstudio.R;
 
 public class ProjectListActivity extends AppCompatActivity {
     public static final String TAG = ProjectListActivity.class.getSimpleName();
+    private List<Project> project ;
 
 
     private SharedPreferences mPref;
-    String taketoken_id;
+
+    @InjectView(R.id.recycler_view)
+    RecyclerView mRecyclerView;
+
+    private ProjectListAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +53,66 @@ public class ProjectListActivity extends AppCompatActivity {
         ButterKnife.inject(this);
 
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
+        getList();
+
+        project = new ArrayList<>();
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+
+        mAdapter=new ProjectListAdapter(this,project);
+
+        mRecyclerView.setAdapter(mAdapter);
+        //
+        mRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(
+                getApplicationContext()
+        ));
+
+        mRecyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(this, mRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Toast.makeText(ProjectListActivity.this, project.get(position).gettitle(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onItemLongClick(View view, int position) {
+                        // do nothing
+                    }
+                })
+        );
+
+    }
+
+    public void getList() {
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint(Constant.API_URL)
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .build();
+       API api = restAdapter.create(API.class);
+        String user_id = mPref.getString(Constant.PREF_USER_ID,"");
+
+        api.getlist(user_id, new Callback<ProjectList>() {
+
+            @Override
+            public void success(ProjectList projectList , retrofit.client.Response response) {
+                project.addAll(projectList.getData());
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                String response_error, response_message;
+                User user = (User) error.getBodyAs(User.class);
+                response_error = user.geterror();
+                response_message = user.getmessage();
+                Toast.makeText(ProjectListActivity.this, "error:" + response_error + ",message:" + response_message, Toast.LENGTH_SHORT).show();
+
+            }
+
+        });
+
     }
 
     @Override

@@ -39,8 +39,8 @@ public class SignupActivity extends AppCompatActivity {
     @InjectView(R.id.password)
     EditText inputPassword;
 
-    @InjectView(R.id.result)
-    TextView textResult;
+    @InjectView(R.id.login)
+    TextView login;
 
     private ProgressDialog pDialog;
     private SharedPreferences mPref;
@@ -71,9 +71,9 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
         });
-        textResult.setClickable(true);
-        textResult.setFocusable(true);
-        textResult.setOnClickListener(new View.OnClickListener() {
+        login.setClickable(true);
+        login.setFocusable(true);
+        login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
@@ -153,7 +153,7 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void failure(RetrofitError error) {
                 hideDialog();
-                textResult.setText(error.toString());
+                Toast.makeText(SignupActivity.this,error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }

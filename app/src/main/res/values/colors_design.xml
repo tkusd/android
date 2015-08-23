@@ -1,9 +1,14 @@
 
 <resources>
-    <color name="primary">#ff61d7ff</color>
+    <color name="primary">#165187</color>
 
+    <color name="white">#ffffff</color>
+    <color name="background">#165187</color>
+    <color name="holo_light">#f3f3f3</color>
+
+    <color name="text_blue">#0f3355</color>>
     <color name="text_white">#ffffff</color>
+    <color name="text_black">#000000</color>
     <color name="text_hint">#9999FF</color>
-    <color name="text_color">#ff1760a3</color>
     <color name="btn_color">#0f3355</color>
 </resources>
