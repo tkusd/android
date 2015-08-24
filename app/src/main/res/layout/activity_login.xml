@@ -2,8 +2,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="30dp"
-    android:paddingRight="30dp"
+    android:paddingLeft="@dimen/padding_large"
+    android:paddingRight="@dimen/padding_large"
     android:paddingTop="96dp"
     android:background="@drawable/background">
 
@@ -11,8 +11,8 @@
         android:id="@+id/email"
         android:hint="@string/label_email"
         android:textColorHint="@color/text_hint"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
+        android:paddingRight="@dimen/padding_smaill"
+        android:paddingLeft="@dimen/padding_smaill"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:inputType="textEmailAddress"
@@ -20,11 +20,11 @@
         android:textColor="@color/text_blue" />
     <EditText
         android:id="@+id/password"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/margin_medium"
         android:hint="@string/label_password"
         android:textColorHint="@color/text_hint"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
+        android:paddingRight="@dimen/padding_smaill"
+        android:paddingLeft="@dimen/padding_smaill"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:inputType="textPassword"
@@ -32,7 +32,7 @@
         android:textColor="@color/text_blue" />
     <Button
         android:id="@+id/btn_send_request"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="@dimen/margin_large"
         android:text="@string/login"
         android:textColor="@color/text_white"
         android:layout_width="match_parent"
@@ -45,7 +45,7 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/margin_medium"
         >
         <TextView
             android:id="@+id/text_signup"

@@ -1,67 +1,124 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true"
+    android:background="#a7b6bf">
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="@dimen/padding_large"
+    android:paddingRight="@dimen/padding_large"
+    android:orientation="vertical"
    >
 
-
     <TextView
+        android:id="@+id/txtName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="名稱"
-        android:id="@+id/txtName" />
+        android:layout_marginTop="30dp"
+        android:textColor="@color/text_blue" />
     <EditText
-        android:layout_width="353dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/edtName"/>
+        android:id="@+id/edtName"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingRight="@dimen/padding_smaill"
+        android:paddingLeft="@dimen/padding_smaill"
+        android:background="@drawable/edittext"
+        android:textColor="@color/text_blue"
+        android:layout_marginTop="@dimen/margin_small" />
     <TextView
+        android:id="@+id/txtEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="電子信箱"
-        android:id="@+id/txtEmail" />
+        android:layout_marginTop="@dimen/margin_medium"
+        android:textColor="@color/text_blue" />
     <EditText
-        android:layout_width="349dp"
-        android:layout_height="wrap_content"
         android:id="@+id/edtEmail"
-        android:inputType="textEmailAddress"/>
-    <Button
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingRight="@dimen/padding_smaill"
+        android:paddingLeft="@dimen/padding_smaill"
+        android:inputType="textEmailAddress"
+        android:background="@drawable/edittext"
+        android:textColor="@color/text_blue"
+        android:layout_marginTop="@dimen/margin_small" />
+
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="更新"
-        android:id="@+id/btn_update"/>
+        android:layout_marginTop="@dimen/margin_medium"
+        >
+        <Button
+            android:id="@+id/btn_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="更新"
+            android:background="@drawable/btnshape"
+            android:textColor="@color/white"
+            android:foregroundGravity="center_vertical"
+            android:layout_alignParentLeft="true" />
+        <Button
+            android:id="@+id/btn_deleteAccount"
+            android:layout_toRightOf="@+id/btn_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="刪除帳號"
+            android:background="@drawable/deletebtn"
+            android:textColor="@color/white"
+            android:layout_marginLeft="@dimen/margin_medium" />
+
+    </RelativeLayout>
+
     <TextView
+        android:id="@+id/txtOldPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="目前密碼"
-        android:id="@+id/txtOldPassword" />
+        android:layout_marginTop="@dimen/margin_medium"
+        android:textColor="@color/text_blue" />
     <EditText
-        android:layout_width="348dp"
-        android:layout_height="wrap_content"
         android:id="@+id/edtOldPass"
-        android:inputType="textPassword"/>
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingRight="@dimen/padding_smaill"
+        android:paddingLeft="@dimen/padding_smaill"
+        android:inputType="textPassword"
+        android:background="@drawable/edittext"
+        android:textColor="@color/text_blue"
+        android:layout_marginTop="@dimen/margin_small" />
     <TextView
+        android:id="@+id/txtNewPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="新密碼"
-        android:id="@+id/txtNewPassword" />
+        android:layout_marginTop="@dimen/margin_medium"
+        android:textColor="@color/text_blue" />
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/edtNewPass"
-        android:inputType="textPassword"/>
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingRight="@dimen/padding_smaill"
+        android:paddingLeft="@dimen/padding_smaill"
+        android:inputType="textPassword"
+        android:background="@drawable/edittext"
+        android:textColor="@color/text_blue"
+        android:layout_marginTop="@dimen/margin_small" />
     <Button
+        android:id="@+id/btn_updatePassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="變更密碼"
-        android:id="@+id/btn_updatePassword"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="刪除帳號"
-        android:id="@+id/btn_deleteAccount"/>
+        android:background="@drawable/btnshape"
+        android:textColor="@color/white"
+        android:layout_marginTop="@dimen/margin_medium" />
 
 </LinearLayout>
+</ScrollView>

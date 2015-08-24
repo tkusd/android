@@ -13,6 +13,6 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/rowtitle"
         android:textColor="@color/text_black"
-        android:gravity="center" />
+        android:gravity="center_vertical" />
 
 </RelativeLayout>

@@ -32,7 +32,7 @@
 
     </style>
 
-    <!-- ActionBar title text -->
+    <!-- seeting ActionBar title text -->
     <style name="MyActionBarTitleText"
         parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@color/text_white</item>
@@ -47,18 +47,17 @@
     </style>
 
 
-    <!-- ToolBar -->
-    <style name="ToolBarStyle" parent="Theme.AppCompat">
+    <!--list  ToolBar -->
+    <style name="ToolBarStyle" parent="@style/Theme.AppCompat.Light">
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColorSecondary">@android:color/white</item>
-        <item name="actionMenuTextColor">@android:color/white</item>
+        <item name="android:itemTextAppearance">@style/TextAppearance</item>
 
     </style>
 
-    <!-- toolbar menu -->
-    <style name="Theme.Toolbar.Menu" parent="ThemeOverlay.AppCompat.Light">
-        <item name="android:background">@color/holo_light</item>
-        <item name="android:textColorPrimary">@color/text_black</item>
+    <!-- toolbar menu color-->
+    <style name="TextAppearance">
+        <item name="android:textColor">@android:color/black</item>
     </style>
 
     <!-- float edittext color -->
