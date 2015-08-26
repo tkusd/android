@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
-    android:background="#a7b6bf">
+    android:background="@color/gray">
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="名稱"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="16dp"
         android:textColor="@color/text_blue" />
     <EditText
         android:id="@+id/edtName"
@@ -28,8 +28,7 @@
         android:paddingRight="@dimen/padding_smaill"
         android:paddingLeft="@dimen/padding_smaill"
         android:background="@drawable/edittext"
-        android:textColor="@color/text_blue"
-        android:layout_marginTop="@dimen/margin_small" />
+        android:textColor="@color/text_blue" />
     <TextView
         android:id="@+id/txtEmail"
         android:layout_width="wrap_content"
@@ -46,8 +45,7 @@
         android:paddingLeft="@dimen/padding_smaill"
         android:inputType="textEmailAddress"
         android:background="@drawable/edittext"
-        android:textColor="@color/text_blue"
-        android:layout_marginTop="@dimen/margin_small" />
+        android:textColor="@color/text_blue" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -59,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="更新"
-            android:background="@drawable/btnshape"
+            android:background="@drawable/bluebtn_shape"
             android:textColor="@color/white"
             android:foregroundGravity="center_vertical"
             android:layout_alignParentLeft="true" />
@@ -69,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="刪除帳號"
-            android:background="@drawable/deletebtn"
+            android:background="@drawable/delbtn_shape"
             android:textColor="@color/white"
             android:layout_marginLeft="@dimen/margin_medium" />
 
@@ -91,8 +89,7 @@
         android:paddingLeft="@dimen/padding_smaill"
         android:inputType="textPassword"
         android:background="@drawable/edittext"
-        android:textColor="@color/text_blue"
-        android:layout_marginTop="@dimen/margin_small" />
+        android:textColor="@color/text_blue" />
     <TextView
         android:id="@+id/txtNewPassword"
         android:layout_width="wrap_content"
@@ -109,14 +106,13 @@
         android:paddingLeft="@dimen/padding_smaill"
         android:inputType="textPassword"
         android:background="@drawable/edittext"
-        android:textColor="@color/text_blue"
-        android:layout_marginTop="@dimen/margin_small" />
+        android:textColor="@color/text_blue" />
     <Button
         android:id="@+id/btn_updatePassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="變更密碼"
-        android:background="@drawable/btnshape"
+        android:background="@drawable/bluebtn_shape"
         android:textColor="@color/white"
         android:layout_marginTop="@dimen/margin_medium" />
 

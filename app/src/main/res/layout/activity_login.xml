@@ -1,11 +1,16 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:background="@drawable/background"
+    android:fillViewport="true">
+
+<LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/padding_large"
     android:paddingRight="@dimen/padding_large"
-    android:paddingTop="96dp"
-    android:background="@drawable/background">
+    android:paddingTop="96dp">
 
     <EditText
         android:id="@+id/email"
@@ -37,7 +42,7 @@
         android:textColor="@color/text_white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/btnshape"
+        android:background="@drawable/bluebtn_shape"
         android:layout_gravity="center"
         android:textStyle="bold" />
 
@@ -66,3 +71,4 @@
 
     </RelativeLayout>
 </LinearLayout>
+</ScrollView>

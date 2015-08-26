@@ -84,7 +84,7 @@
         android:layout_gravity="center"
         android:text="@string/signup"
         android:textColor="@color/text_white"
-        android:background="@drawable/btnshape"
+        android:background="@drawable/bluebtn_shape"
 
         android:textStyle="bold" />
 
