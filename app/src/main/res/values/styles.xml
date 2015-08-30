@@ -13,12 +13,11 @@
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/MyActionBarTabText</item>
         <item name="android:actionMenuTextColor">@color/text_white</item>
-        <item name="android:homeAsUpIndicator">@mipmap/ic_action_back</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
         <!-- Support library compatibility -->
         <item name="actionBarStyle">@style/MyActionBar</item>
         <item name="actionBarTabTextStyle">@style/MyActionBarTabText</item>
         <item name="actionMenuTextColor">@color/text_white</item>
-        <item name="homeAsUpIndicator">@mipmap/ic_action_back</item>
 
     </style>
 

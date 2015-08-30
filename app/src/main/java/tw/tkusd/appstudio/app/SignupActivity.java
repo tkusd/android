@@ -6,11 +6,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Patterns;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -52,6 +55,14 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.inject(this);
+
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+            Window window=getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(getResources().getColor(R.color.primary_dark));
+        }
+
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
         btnSendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,8 +173,8 @@ public class SignupActivity extends AppCompatActivity {
     //  沒網路時產生的dialog
     private void nonetdialog(){
         AlertDialog alertDialog = new AlertDialog.Builder(SignupActivity.this).create();
-        alertDialog.setTitle("註冊失敗");
-        alertDialog.setMessage("無網路連接");
+        alertDialog.setTitle("Fail");
+        alertDialog.setMessage("No Network Connection.");
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {

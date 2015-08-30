@@ -4,18 +4,22 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import android.support.v7.widget.Toolbar;
 
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -46,6 +50,15 @@ public class ProjectListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_list);
+
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+            Window window=getWindow();
+
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(getResources().getColor(R.color.primary_dark));
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setOnMenuItemClickListener(onMenuItemClick);
@@ -96,7 +109,7 @@ public class ProjectListActivity extends AppCompatActivity {
         api.getlist(user_id, new Callback<ProjectList>() {
 
             @Override
-            public void success(ProjectList projectList , retrofit.client.Response response) {
+            public void success(ProjectList projectList, retrofit.client.Response response) {
                 project.addAll(projectList.getData());
                 mAdapter.notifyDataSetChanged();
             }
@@ -113,6 +126,14 @@ public class ProjectListActivity extends AppCompatActivity {
 
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent setIntent = new Intent(Intent.ACTION_MAIN);
+        setIntent.addCategory(Intent.CATEGORY_HOME);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(setIntent);
     }
 
     @Override
@@ -138,6 +159,7 @@ public class ProjectListActivity extends AppCompatActivity {
             return true;
         }
     };
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -207,4 +229,6 @@ public class ProjectListActivity extends AppCompatActivity {
                 });
         alertDialog.show();
     }
+
+
 }

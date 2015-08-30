@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources>>
 
     <style name="AppNoActionBar" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+
     </style>
+
+    <style name="CustomActionBarTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/MyActionBarTabText</item>
+        <item name="android:actionMenuTextColor">@color/text_white</item>
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <!-- Support library compatibility -->
+        <item name="actionBarStyle">@style/MyActionBar</item>
+        <item name="actionBarTabTextStyle">@style/MyActionBarTabText</item>
+        <item name="actionMenuTextColor">@color/text_white</item>
+
+    </style>
+
 
 </resources>
