@@ -39,6 +39,7 @@ public class LoginActivity extends AppCompatActivity{
 
     @InjectView(R.id.text_signup)
     TextView text_signup;
+
     @InjectView(R.id.text_help)
     TextView text_help;
 
@@ -69,9 +70,20 @@ public class LoginActivity extends AppCompatActivity{
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
+
+        text_help.setClickable(true);
+        text_help.setFocusable(true);
+        text_help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, ForgetActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     private void showDialog() {
@@ -115,6 +127,7 @@ public class LoginActivity extends AppCompatActivity{
                 Toast.makeText(LoginActivity.this, "login success", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(LoginActivity.this, ProjectListActivity.class);
                 startActivity(intent);
+                finish();
             }
             @Override
             public void failure(RetrofitError error) {

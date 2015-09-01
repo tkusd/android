@@ -48,7 +48,7 @@
 
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_medium"
         >
@@ -56,18 +56,18 @@
             android:id="@+id/text_signup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:text="Sign up now"
             android:textColor="@color/text_white"
             android:gravity="left" />
         <TextView
             android:id="@+id/text_help"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Need help?"
+            android:text="Forget Password?"
             android:textColor="@color/text_white"
-            android:gravity="right" />
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
 </LinearLayout>
