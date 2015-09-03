@@ -1,11 +1,17 @@
 package tw.tkusd.appstudio.app;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,8 +37,11 @@ public class LoginActivity extends AppCompatActivity{
     @InjectView(R.id.password)
     EditText inputPassword;
 
-    @InjectView(R.id.result)
-    TextView textResult;
+    @InjectView(R.id.text_signup)
+    TextView text_signup;
+
+    @InjectView(R.id.text_help)
+    TextView text_help;
 
     private ProgressDialog pDialog;
     private SharedPreferences mPref;
@@ -41,9 +50,40 @@ public class LoginActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        ButterKnife.inject(this);
 
+        //set  status bar color
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+            Window window=getWindow();
+
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(getResources().getColor(R.color.primary_dark));
+        }
+
+        ButterKnife.inject(this);
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        text_signup.setClickable(true);
+        text_signup.setFocusable(true);
+        text_signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        text_help.setClickable(true);
+        text_help.setFocusable(true);
+        text_help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, ForgetActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     private void showDialog() {
@@ -87,34 +127,48 @@ public class LoginActivity extends AppCompatActivity{
                 Toast.makeText(LoginActivity.this, "login success", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(LoginActivity.this, ProjectListActivity.class);
                 startActivity(intent);
+                finish();
             }
             @Override
             public void failure(RetrofitError error) {
                 hideDialog();
-                String response_error;
-                User user = (User) error.getBodyAs(User.class);
-                response_error = user.geterror();
-                if (response_error.equals("1100")) {
-                    inputEmail.setError("invalid email");
-                    inputPassword.setError("invalid password");
-                }
-                if(response_error.equals("1300")){
-                    inputPassword.setError("invalid password");
-                }
-                if(response_error.equals("1200")){
-                    inputEmail.setError("email hasn't been used");
-                }
-                if(response_error.equals("1104")){
-                    inputEmail.setError("invalid email");
-                }
 
+                if (error.getKind().equals(RetrofitError.Kind.NETWORK)) {
+                    nonetdialog();
+                }else {
+                    String response_error;
+                    User user = (User) error.getBodyAs(User.class);
+                    response_error = user.geterror();
+                    if (response_error.equals("1100")) {
+                        inputEmail.setError("invalid email");
+                        inputPassword.setError("invalid password");
+                    }
+                    if (response_error.equals("1300")) {
+                        inputPassword.setError("invalid password");
+                    }
+                    if (response_error.equals("1200")) {
+                        inputEmail.setError("email didn't exist");
+                    }
+                    if (response_error.equals("1104")) {
+                        inputEmail.setError("invalid email");
+                    }
+                }
             }
         });
     }
 
-    @OnClick(R.id.btn_signup)
-    void signup() {
-        Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
-        startActivity(intent);
+    private void nonetdialog(){
+        AlertDialog alertDialog = new AlertDialog.Builder(LoginActivity.this).create();
+        alertDialog.setTitle("Fail");
+        alertDialog.setMessage("No Network Connection.");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
+
+
 }

@@ -1,16 +1,16 @@
+
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="tw.tkusd.appstudio.app.ProjectListActivity"
-    android:weightSum="1"
-    android:orientation="vertical">
-
+    tools:context="tw.tkusd.appstudio.app.ProjectListActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        android:background="@color/primary"
+        app:theme="@style/ToolBarStyle"
+        android:background="@drawable/actionbar"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:minHeight="?attr/actionBarSize">
@@ -18,6 +18,7 @@
     </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.RecyclerView
+
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
