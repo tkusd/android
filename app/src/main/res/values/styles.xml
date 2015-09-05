@@ -63,5 +63,8 @@
     <style name="floatlabelededittext">
         <item name="android:textColor">@color/text_white</item>
     </style>
+    <style name="setting_floatlabelededittext">
+        <item name="android:textColor">@color/text_blue</item>
+    </style>
 
 </resources>

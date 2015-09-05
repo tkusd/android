@@ -1,16 +1,14 @@
 package tw.tkusd.appstudio.app;
 
-import android.app.ActionBar;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -42,10 +40,14 @@ public class SettingActivity extends AppCompatActivity {
     EditText edtOldpass;
     @InjectView(R.id.edtNewPass)
     EditText edtNewPass;
-    @InjectView(R.id.btn_updatePassword)
-    Button btn_updatePassword;
+
+    @InjectView(R.id.btn_updateAccount)
+    Button btn_updateAccount;
     @InjectView(R.id.btn_deleteAccount)
     Button btn_deleteAccount;
+    @InjectView(R.id.btn_updatePassword)
+    Button btn_updatePassword;
+
 
 
     private SharedPreferences mPref;
@@ -74,6 +76,45 @@ public class SettingActivity extends AppCompatActivity {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        btn_updateAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (edtName.getText().length() == 0) {
+                    edtName.setError("name is required");
+                }
+                final String putemail = edtEmail.getText().toString();
+                if (!isValidEmail(putemail)) {
+                    edtEmail.setError("invalid email");
+                }
+                if (edtName.getText().length() != 0 && isValidEmail(putemail)) {
+                    updateAccount();
+                }
+
+            }
+        });
+
+        btn_deleteAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               deletedialog();
+            }
+        });
+
+        btn_updatePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (edtOldpass.getText().length() == 0) {
+                    edtOldpass.setError("password is required");
+                }
+                if (edtNewPass.getText().length() < 6) {
+                    edtNewPass.setError("password length need at least 6.");
+                }
+                if(edtOldpass.getText().length()!=0 && edtNewPass.getText().length()>=6) {
+                    updatePassword();
+                }
+            }
+        });
+
     }
 
     @Override
@@ -86,9 +127,6 @@ public class SettingActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-
 
 
     private void getUser() {
@@ -114,32 +152,7 @@ public class SettingActivity extends AppCompatActivity {
 
     }
 
-    @OnClick(R.id.btn_deleteAccount)
-    void onndeleteclick() {
-        new AlertDialog.Builder(SettingActivity.this)
-                .setTitle("刪除帳號")
-                .setMessage("你確定要刪除帳號嗎?")
-                .setPositiveButton("確定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteAccount();
-                    }
-                })
-                .setNegativeButton("取消", null).show();
-
-    }
-
-    @OnClick(R.id.btn_update)
-    void onUpdate(){
-        update();
-    }
-
-    @OnClick(R.id.btn_updatePassword)
-    void onUpdatePassword(){
-        updatePassword();
-    }
-
-    public void update(){
+    public void updateAccount(){
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(Constant.API_URL).setLogLevel(RestAdapter.LogLevel.FULL)
                 .setRequestInterceptor(new CustomRequestInterceptor(this)).build();
@@ -155,11 +168,15 @@ public class SettingActivity extends AppCompatActivity {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(SettingActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                if (error.getKind().equals(RetrofitError.Kind.NETWORK)) {
+                    nonetdialog();
+                } else {
+                    Toast.makeText(SettingActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
         }
-//
+
     public void updatePassword(){
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(Constant.API_URL).setLogLevel(RestAdapter.LogLevel.FULL)
@@ -178,17 +195,23 @@ public class SettingActivity extends AppCompatActivity {
 
             @Override
             public void failure(RetrofitError error) {
-                String response_error;
-                User user = (User) error.getBodyAs(User.class);
-                response_error = user.geterror();
-                if (response_error.equals("1300")) {
-                    edtOldpass.setError("invalid password");
+                if (error.getKind().equals(RetrofitError.Kind.NETWORK)) {
+                    nonetdialog();
+                }
+                else {
+                    User user = (User) error.getBodyAs(User.class);
+                    String response_error = user.geterror();
+                    String response_message = user.getmessage();
+
+                    if (response_error.equals("1300")) {
+                        edtOldpass.setError("wrong password");
+                    }else {
+                        Toast.makeText(SettingActivity.this, response_message.toString(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
     }
-
-
 
     public void deleteAccount(){
         RestAdapter restAdapter = new RestAdapter.Builder()
@@ -207,10 +230,43 @@ public class SettingActivity extends AppCompatActivity {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(SettingActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                if (error.getKind().equals(RetrofitError.Kind.NETWORK)) {
+                    nonetdialog();
+                }else {
+                    Toast.makeText(SettingActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
     }
 
+    private void nonetdialog(){
+        android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(SettingActivity.this).create();
+        alertDialog.setTitle("Fail");
+        alertDialog.setMessage("No Network Connection.");
+        alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    private void deletedialog(){
+        new android.app.AlertDialog.Builder(this).setTitle("message").setMessage("Are you sure to delete account ?")
+                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteAccount();
+                    }
+                })
+                .setNegativeButton("no",null)
+                .show();
+    }
+
+    public static boolean isValidEmail(String email){
+        if(email==null)
+            return false;
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
 }
