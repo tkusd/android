@@ -40,6 +40,8 @@ public class SettingActivity extends AppCompatActivity {
     EditText edtOldpass;
     @InjectView(R.id.edtNewPass)
     EditText edtNewPass;
+    @InjectView(R.id.edtConfirmPass)
+    EditText edtConfirmPass;
 
     @InjectView(R.id.btn_updateAccount)
     Button btn_updateAccount;
@@ -104,12 +106,17 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (edtOldpass.getText().length() == 0) {
-                    edtOldpass.setError("password is required");
+                    edtOldpass.setError("Password is required.");
                 }
                 if (edtNewPass.getText().length() < 6) {
-                    edtNewPass.setError("password length need at least 6.");
+                    edtNewPass.setError("Password length need at least 6.");
                 }
-                if(edtOldpass.getText().length()!=0 && edtNewPass.getText().length()>=6) {
+                String newpass=edtNewPass.getText().toString();
+                String confirmpass=edtConfirmPass.getText().toString();
+                if(!confirmpass.equals(newpass)){
+                    edtConfirmPass.setError("Your password did't match.");
+                }
+                if(edtOldpass.getText().length() != 0 && edtNewPass.getText().length() >= 6 && confirmpass.equals(newpass)) {
                     updatePassword();
                 }
             }
@@ -146,7 +153,11 @@ public class SettingActivity extends AppCompatActivity {
 
             @Override
             public void failure(RetrofitError error) {
-                Toast.makeText(SettingActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                if (error.getKind().equals(RetrofitError.Kind.NETWORK)) {
+                    nonetdialog();
+                }else {
+                    Toast.makeText(SettingActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
