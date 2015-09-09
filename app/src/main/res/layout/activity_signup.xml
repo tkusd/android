@@ -92,7 +92,7 @@
         android:id="@+id/login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Already have an account?"
+        android:text="@string/label_already_have_account"
         android:layout_gravity="center_horizontal"
         android:textColor="@color/white"
         android:layout_marginTop="@dimen/margin_medium" />

@@ -70,9 +70,9 @@ public class ForgetActivity extends AppCompatActivity {
 
     private void senddialog(){
         AlertDialog alertDialog = new AlertDialog.Builder(ForgetActivity.this).create();
-        alertDialog.setTitle("Sucess");
-        alertDialog.setMessage("Please check your email,the password will be reset.");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+        alertDialog.setTitle("成功");
+        alertDialog.setMessage("請到信箱收取驗證信,密碼將會被重設");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "確定",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

@@ -56,14 +56,14 @@
             android:id="@+id/text_signup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sign up now"
+            android:text="@string/label_goto_signup"
             android:textColor="@color/text_white"
             android:gravity="left" />
         <TextView
             android:id="@+id/text_help"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Forget Password?"
+            android:text="@string/label_forget_password"
             android:textColor="@color/text_white"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"

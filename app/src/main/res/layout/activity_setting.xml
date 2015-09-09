@@ -11,7 +11,7 @@
     android:paddingLeft="@dimen/padding_large"
     android:paddingRight="@dimen/padding_large"
     android:orientation="vertical"
-    android:paddingTop="80dp">
+    android:paddingTop="@dimen/padding_medium">
 
     <com.wrapp.floatlabelededittext.FloatLabeledEditText
         android:layout_width="match_parent"
@@ -62,7 +62,7 @@
             android:id="@+id/btn_deleteAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="delete"
+            android:text="@string/delete_account"
             android:background="@drawable/delbtn_shape"
             android:textColor="@color/white"
             android:layout_gravity="right"
@@ -76,7 +76,7 @@
             android:id="@+id/btn_updateAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="update"
+            android:text="@string/update_account"
             android:background="@drawable/bluebtn_shape"
             android:textColor="@color/white"
             android:foregroundGravity="center_vertical"
@@ -103,7 +103,7 @@
         android:inputType="textPassword"
         android:background="@drawable/pressedittext"
         android:textColorHint="@color/text_hint"
-        android:hint="Old password"
+        android:hint="@string/old_password"
         android:textColor="@color/text_blue" />
     </com.wrapp.floatlabelededittext.FloatLabeledEditText>
 
@@ -121,7 +121,7 @@
         android:inputType="textPassword"
         android:background="@drawable/pressedittext"
         android:textColorHint="@color/text_hint"
-        android:hint="New password"
+        android:hint="@string/new_password"
         android:textColor="@color/text_blue" />
     </com.wrapp.floatlabelededittext.FloatLabeledEditText>
 
@@ -139,7 +139,7 @@
             android:inputType="textPassword"
             android:background="@drawable/pressedittext"
             android:textColorHint="@color/text_hint"
-            android:hint="Confirm password"
+            android:hint="@string/confirm_password"
             android:textColor="@color/text_blue" />
     </com.wrapp.floatlabelededittext.FloatLabeledEditText>
 

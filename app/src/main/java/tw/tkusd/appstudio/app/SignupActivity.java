@@ -69,13 +69,13 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View view) {
                 final String putemail = inputEmail.getText().toString();
                 if (!isValidEmail(putemail)) {
-                    inputEmail.setError("invalid email");
+                    inputEmail.setError("信箱格式錯誤");
                 }
                 if (inputName.getText().length() == 0) {
-                    inputName.setError("name  is required");
+                    inputName.setError("必填欄位");
                 }
                 if (inputPassword.getText().length() < 6) {
-                    inputPassword.setError("password length need at least 6");
+                    inputPassword.setError("密碼長度至少為6碼");
                 }
                 if (inputName.getText().length() != 0 && inputPassword.getText().length() != 0 && isValidEmail(putemail)) {
                     signup();
@@ -173,9 +173,9 @@ public class SignupActivity extends AppCompatActivity {
     //  沒網路時產生的dialog
     private void nonetdialog(){
         AlertDialog alertDialog = new AlertDialog.Builder(SignupActivity.this).create();
-        alertDialog.setTitle("Fail");
-        alertDialog.setMessage("No Network Connection.");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+        alertDialog.setTitle("失敗");
+        alertDialog.setMessage("沒有網路連接");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "確定",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -193,7 +193,7 @@ public class SignupActivity extends AppCompatActivity {
     private void showDialog() {
         pDialog = new ProgressDialog(this);
 
-        pDialog.setMessage("Please wait...");
+        pDialog.setMessage("請稍後...");
         pDialog.setCancelable(false);
         pDialog.setCanceledOnTouchOutside(false);
         pDialog.show();

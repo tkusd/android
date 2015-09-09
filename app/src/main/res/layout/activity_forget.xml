@@ -14,10 +14,9 @@
         android:id="@+id/text_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Email"
+        android:text="@string/label_email"
         android:textColor="@color/white"
-        android:layout_marginTop="@dimen/margin_medium"
-        android:paddingTop="96dp" />
+        android:layout_marginTop="@dimen/margin_huge" />
 
     <EditText
         android:id="@+id/email"
@@ -33,7 +32,7 @@
         android:id="@+id/btn_send_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="send"
+        android:text="@string/btn_send"
         android:textColor="@color/text_white"
         android:background="@drawable/bluebtn_shape"
         android:textStyle="bold"

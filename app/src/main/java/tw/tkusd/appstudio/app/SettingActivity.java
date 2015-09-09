@@ -82,11 +82,11 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (edtName.getText().length() == 0) {
-                    edtName.setError("name is required");
+                    edtName.setError("必填欄位");
                 }
                 final String putemail = edtEmail.getText().toString();
                 if (!isValidEmail(putemail)) {
-                    edtEmail.setError("invalid email");
+                    edtEmail.setError("信箱格式錯誤");
                 }
                 if (edtName.getText().length() != 0 && isValidEmail(putemail)) {
                     updateAccount();
@@ -106,15 +106,15 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (edtOldpass.getText().length() == 0) {
-                    edtOldpass.setError("Password is required.");
+                    edtOldpass.setError("必填欄位");
                 }
                 if (edtNewPass.getText().length() < 6) {
-                    edtNewPass.setError("Password length need at least 6.");
+                    edtNewPass.setError("密碼長度至少6碼.");
                 }
                 String newpass=edtNewPass.getText().toString();
                 String confirmpass=edtConfirmPass.getText().toString();
                 if(!confirmpass.equals(newpass)){
-                    edtConfirmPass.setError("Your password did't match.");
+                    edtConfirmPass.setError("密碼不相同");
                 }
                 if(edtOldpass.getText().length() != 0 && edtNewPass.getText().length() >= 6 && confirmpass.equals(newpass)) {
                     updatePassword();
@@ -174,7 +174,7 @@ public class SettingActivity extends AppCompatActivity {
 
             @Override
             public void success(User user, retrofit.client.Response response) {
-                Toast.makeText(SettingActivity.this, "update success", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SettingActivity.this, "更新成功", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -201,7 +201,7 @@ public class SettingActivity extends AppCompatActivity {
 
             @Override
             public void success(User user, retrofit.client.Response response) {
-                Toast.makeText(SettingActivity.this, "update success", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SettingActivity.this, "更新成功", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -215,7 +215,7 @@ public class SettingActivity extends AppCompatActivity {
                     String response_message = user.getmessage();
 
                     if (response_error.equals("1300")) {
-                        edtOldpass.setError("wrong password");
+                        edtOldpass.setError("密碼錯誤");
                     }else {
                         Toast.makeText(SettingActivity.this, response_message.toString(), Toast.LENGTH_SHORT).show();
                     }
@@ -233,7 +233,7 @@ public class SettingActivity extends AppCompatActivity {
         api.deleteAccount(userid, new Callback<User>() {
             @Override
             public void success(User user, retrofit.client.Response response) {
-                Toast.makeText(SettingActivity.this, "delete success", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SettingActivity.this, "刪除成功", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(SettingActivity.this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
@@ -253,9 +253,9 @@ public class SettingActivity extends AppCompatActivity {
 
     private void nonetdialog(){
         android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(SettingActivity.this).create();
-        alertDialog.setTitle("Fail");
-        alertDialog.setMessage("No Network Connection.");
-        alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "OK",
+        alertDialog.setTitle("失敗");
+        alertDialog.setMessage("無網路連接");
+        alertDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, "確定",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -265,13 +265,13 @@ public class SettingActivity extends AppCompatActivity {
     }
 
     private void deletedialog(){
-        new android.app.AlertDialog.Builder(this).setTitle("message").setMessage("Are you sure to delete account ?")
-                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+        new android.app.AlertDialog.Builder(this).setTitle("訊息").setMessage("確定要刪除帳戶 ?")
+                .setPositiveButton("確定", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         deleteAccount();
                     }
                 })
-                .setNegativeButton("no",null)
+                .setNegativeButton("取消",null)
                 .show();
     }
 

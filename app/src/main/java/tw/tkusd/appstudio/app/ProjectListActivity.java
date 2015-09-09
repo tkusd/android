@@ -207,21 +207,21 @@ public class ProjectListActivity extends AppCompatActivity {
     }
 
     public void checklogout(){
-        new AlertDialog.Builder(this).setTitle("message").setMessage("sure to leave?")
-                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+        new AlertDialog.Builder(this).setTitle("訊息").setMessage("確定要登出?")
+                .setPositiveButton("確定", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         deletetoken();
                     }
                 })
-                .setNegativeButton("no",null)
+                .setNegativeButton("取消",null)
                 .show();
 
     }
     private void nonetdialog(){
         AlertDialog alertDialog = new AlertDialog.Builder(ProjectListActivity.this).create();
-        alertDialog.setTitle("fail");
-        alertDialog.setMessage("no network connection");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+        alertDialog.setTitle("失敗");
+        alertDialog.setMessage("無網路連接");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "確定",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

@@ -73,10 +73,10 @@ public class LoginActivity extends AppCompatActivity{
             public void onClick(View view) {
                 final String putemail = inputEmail.getText().toString();
                 if (!isValidEmail(putemail)) {
-                    inputEmail.setError("invalid email");
+                    inputEmail.setError("信箱格式錯誤");
                 }
                 if (inputPassword.getText().length() == 0) {
-                    inputPassword.setError("password is required");
+                    inputPassword.setError("必填欄位");
                 }
                 if ( inputPassword.getText().length() != 0 && isValidEmail(putemail)) {
                     login();
@@ -127,7 +127,7 @@ public class LoginActivity extends AppCompatActivity{
                 editor.apply();
 
                 hideDialog();
-                Toast.makeText(LoginActivity.this, "login success", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "登入成功", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(LoginActivity.this, ProjectListActivity.class);
                 startActivity(intent);
                 finish();
@@ -144,10 +144,10 @@ public class LoginActivity extends AppCompatActivity{
                     User user = (User) error.getBodyAs(User.class);
                     response_error = user.geterror();
                     if (response_error.equals("1200")) {
-                        inputEmail.setError("email didn't exist.");
+                        inputEmail.setError("信箱不存在");
                     }
                     if (response_error.equals("1300")) {
-                        inputPassword.setError("wrong password.");
+                        inputPassword.setError("密碼錯誤");
                     }
 
                 }
@@ -157,7 +157,7 @@ public class LoginActivity extends AppCompatActivity{
 
     private void showDialog() {
         pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Please wait...");
+        pDialog.setMessage("請稍後..");
         pDialog.setCancelable(false);
         pDialog.setCanceledOnTouchOutside(false);
         pDialog.show();
@@ -179,9 +179,9 @@ public class LoginActivity extends AppCompatActivity{
 
     private void nonetdialog(){
         AlertDialog alertDialog = new AlertDialog.Builder(LoginActivity.this).create();
-        alertDialog.setTitle("Fail");
-        alertDialog.setMessage("No Network Connection.");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+        alertDialog.setTitle("失敗");
+        alertDialog.setMessage("沒有網路連接");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "確定",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
