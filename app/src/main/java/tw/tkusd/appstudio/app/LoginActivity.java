@@ -9,9 +9,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Patterns;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +32,9 @@ import tw.tkusd.appstudio.R;
  */
 public class LoginActivity extends AppCompatActivity{
     public static final String TAG = LoginActivity.class.getSimpleName();
+
+    @InjectView(R.id.btn_send_request)
+    Button btnSendRequest;
 
     @InjectView(R.id.email)
     EditText inputEmail;
@@ -63,6 +68,22 @@ public class LoginActivity extends AppCompatActivity{
         ButterKnife.inject(this);
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
 
+        btnSendRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String putemail = inputEmail.getText().toString();
+                if (!isValidEmail(putemail)) {
+                    inputEmail.setError("invalid email");
+                }
+                if (inputPassword.getText().length() == 0) {
+                    inputPassword.setError("password is required");
+                }
+                if ( inputPassword.getText().length() != 0 && isValidEmail(putemail)) {
+                    login();
+                }
+            }
+        });
+
         text_signup.setClickable(true);
         text_signup.setFocusable(true);
         text_signup.setOnClickListener(new View.OnClickListener() {
@@ -82,32 +103,14 @@ public class LoginActivity extends AppCompatActivity{
                 startActivity(intent);
             }
         });
-
-
     }
 
-    private void showDialog() {
-        pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Please wait...");
-        pDialog.setCancelable(false);
-        pDialog.setCanceledOnTouchOutside(false);
-        pDialog.show();
-    }
-
-    private void hideDialog() {
-        if (pDialog != null){
-            pDialog.dismiss();
-            pDialog = null;
-        }
-    }
-
-    @OnClick(R.id.btn_send_request)
-    void login() {
+    public  void login() {
         showDialog();
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(Constant.API_URL).
-                        setLogLevel(RestAdapter.LogLevel.FULL).
-                        build();
+                .setEndpoint(Constant.API_URL)
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .build();
         API api = restAdapter.create(API.class);
         String email = inputEmail.getText().toString();
         final String password = inputPassword.getText().toString();
@@ -129,32 +132,49 @@ public class LoginActivity extends AppCompatActivity{
                 startActivity(intent);
                 finish();
             }
+
             @Override
             public void failure(RetrofitError error) {
                 hideDialog();
 
                 if (error.getKind().equals(RetrofitError.Kind.NETWORK)) {
                     nonetdialog();
-                }else {
+                } else {
                     String response_error;
                     User user = (User) error.getBodyAs(User.class);
                     response_error = user.geterror();
-                    if (response_error.equals("1100")) {
-                        inputEmail.setError("invalid email");
-                        inputPassword.setError("invalid password");
+                    if (response_error.equals("1200")) {
+                        inputEmail.setError("email didn't exist.");
                     }
                     if (response_error.equals("1300")) {
-                        inputPassword.setError("invalid password");
+                        inputPassword.setError("wrong password.");
                     }
-                    if (response_error.equals("1200")) {
-                        inputEmail.setError("email didn't exist");
-                    }
-                    if (response_error.equals("1104")) {
-                        inputEmail.setError("invalid email");
-                    }
+
                 }
             }
         });
+    }
+
+    private void showDialog() {
+        pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Please wait...");
+        pDialog.setCancelable(false);
+        pDialog.setCanceledOnTouchOutside(false);
+        pDialog.show();
+    }
+
+    private void hideDialog() {
+        if (pDialog != null){
+            pDialog.dismiss();
+            pDialog = null;
+        }
+    }
+
+    //valid email
+    public static boolean isValidEmail(String email){
+        if(email==null)
+            return false;
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     private void nonetdialog(){

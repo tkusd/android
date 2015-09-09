@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
-    android:background="#BBDEFB">
+    android:background="@color/setting_background">
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -11,16 +11,14 @@
     android:paddingLeft="@dimen/padding_large"
     android:paddingRight="@dimen/padding_large"
     android:orientation="vertical"
-   >
+    android:paddingTop="80dp">
 
-    <TextView
-        android:id="@+id/txtName"
-        android:layout_width="wrap_content"
+    <com.wrapp.floatlabelededittext.FloatLabeledEditText
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="名稱"
-        android:layout_marginTop="16dp"
-        android:textColor="@color/text_blue" />
+        app:fletTextAppearance="@style/setting_floatlabelededittext"
+        app:fletPaddingBottom="5dp">
+
     <EditText
         android:id="@+id/edtName"
         android:layout_width="match_parent"
@@ -28,15 +26,18 @@
         android:paddingRight="@dimen/padding_smaill"
         android:paddingLeft="@dimen/padding_smaill"
         android:background="@drawable/pressedittext"
+        android:textColorHint="@color/text_hint"
+        android:hint="@string/label_name"
         android:textColor="@color/text_blue" />
-    <TextView
-        android:id="@+id/txtEmail"
-        android:layout_width="wrap_content"
+    </com.wrapp.floatlabelededittext.FloatLabeledEditText>
+
+
+    <com.wrapp.floatlabelededittext.FloatLabeledEditText
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="電子信箱"
-        android:layout_marginTop="@dimen/margin_medium"
-        android:textColor="@color/text_blue" />
+        app:fletTextAppearance="@style/setting_floatlabelededittext"
+        app:fletPaddingBottom="5dp">
+
     <EditText
         android:id="@+id/edtEmail"
         android:layout_width="match_parent"
@@ -45,42 +46,54 @@
         android:paddingLeft="@dimen/padding_smaill"
         android:inputType="textEmailAddress"
         android:background="@drawable/pressedittext"
+        android:textColorHint="@color/text_hint"
+        android:hint="@string/label_email"
         android:textColor="@color/text_blue" />
+    </com.wrapp.floatlabelededittext.FloatLabeledEditText>
+
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_medium"
         >
+
         <Button
-            android:id="@+id/btn_update"
+            android:id="@+id/btn_deleteAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="更新"
+            android:text="delete"
+            android:background="@drawable/delbtn_shape"
+            android:textColor="@color/white"
+            android:layout_gravity="right"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:id="@+id/btn_updateAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="update"
             android:background="@drawable/bluebtn_shape"
             android:textColor="@color/white"
             android:foregroundGravity="center_vertical"
-            android:layout_alignParentLeft="true" />
-        <Button
-            android:id="@+id/btn_deleteAccount"
-            android:layout_toRightOf="@+id/btn_update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="刪除帳號"
-            android:background="@drawable/delbtn_shape"
-            android:textColor="@color/white"
-            android:layout_marginLeft="@dimen/margin_medium" />
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_gravity="right"
+            android:layout_alignParentTop="false"
+            android:layout_marginRight="8dp"
+            android:layout_alignParentRight="true" />
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/txtOldPassword"
-        android:layout_width="wrap_content"
+    <com.wrapp.floatlabelededittext.FloatLabeledEditText
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="目前密碼"
-        android:layout_marginTop="@dimen/margin_medium"
-        android:textColor="@color/text_blue" />
+        app:fletTextAppearance="@style/setting_floatlabelededittext"
+        app:fletPaddingBottom="5dp">
     <EditText
         android:id="@+id/edtOldPass"
         android:layout_width="match_parent"
@@ -89,15 +102,16 @@
         android:paddingLeft="@dimen/padding_smaill"
         android:inputType="textPassword"
         android:background="@drawable/pressedittext"
+        android:textColorHint="@color/text_hint"
+        android:hint="Old password"
         android:textColor="@color/text_blue" />
-    <TextView
-        android:id="@+id/txtNewPassword"
-        android:layout_width="wrap_content"
+    </com.wrapp.floatlabelededittext.FloatLabeledEditText>
+
+    <com.wrapp.floatlabelededittext.FloatLabeledEditText
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="新密碼"
-        android:layout_marginTop="@dimen/margin_medium"
-        android:textColor="@color/text_blue" />
+        app:fletTextAppearance="@style/setting_floatlabelededittext"
+        app:fletPaddingBottom="5dp">
     <EditText
         android:id="@+id/edtNewPass"
         android:layout_width="match_parent"
@@ -106,15 +120,38 @@
         android:paddingLeft="@dimen/padding_smaill"
         android:inputType="textPassword"
         android:background="@drawable/pressedittext"
+        android:textColorHint="@color/text_hint"
+        android:hint="New password"
         android:textColor="@color/text_blue" />
+    </com.wrapp.floatlabelededittext.FloatLabeledEditText>
+
+    <com.wrapp.floatlabelededittext.FloatLabeledEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:fletTextAppearance="@style/setting_floatlabelededittext"
+        app:fletPaddingBottom="5dp">
+        <EditText
+            android:id="@+id/edtConfirmPass"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:paddingRight="@dimen/padding_smaill"
+            android:paddingLeft="@dimen/padding_smaill"
+            android:inputType="textPassword"
+            android:background="@drawable/pressedittext"
+            android:textColorHint="@color/text_hint"
+            android:hint="Confirm password"
+            android:textColor="@color/text_blue" />
+    </com.wrapp.floatlabelededittext.FloatLabeledEditText>
+
     <Button
         android:id="@+id/btn_updatePassword"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="變更密碼"
+        android:text="@string/update_password"
         android:background="@drawable/bluebtn_shape"
         android:textColor="@color/white"
-        android:layout_marginTop="@dimen/margin_medium" />
+        android:layout_marginTop="@dimen/margin_medium"
+        android:layout_alignParentRight="true" />
 
 </LinearLayout>
 </ScrollView>
