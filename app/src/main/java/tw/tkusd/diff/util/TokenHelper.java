@@ -47,7 +47,7 @@ public class TokenHelper {
     }
 
     public boolean isLoggedIn(){
-        return !TextUtils.isEmpty(currentEmail);
+        return getCurrentAccount() != null;
     }
 
     public UUID getToken() {
@@ -58,7 +58,7 @@ public class TokenHelper {
     }
 
     public UUID getToken(Account account){
-        return parseUUID(accountManager.peekAuthToken(account, accountType));
+        return parseUUID(accountManager.peekAuthToken(account, Authenticator.TYPE_TOKEN));
     }
 
     public UUID getUserId() {
@@ -130,6 +130,13 @@ public class TokenHelper {
     }
 
     public void removeAccount(Account account){
+        if (TextUtils.equals(account.name, currentEmail)){
+            SharedPreferences.Editor editor = prefs.edit();
+            this.currentEmail = "";
+            editor.remove(Constant.PREF_CURRENT_EMAIL);
+            editor.apply();
+        }
+
         accountManager.removeAccount(account, new AccountManagerCallback<Boolean>() {
             @Override
             public void run(AccountManagerFuture<Boolean> future) {

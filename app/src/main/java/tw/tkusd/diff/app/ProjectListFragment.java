@@ -52,6 +52,8 @@ public class ProjectListFragment extends Fragment implements RecyclerViewItemCli
     private UUID userId;
     private TokenHelper tokenHelper;
     private boolean created;
+    private boolean loading;
+    private boolean clearAll;
 
     @InjectView(R.id.list)
     RecyclerView recyclerView;
@@ -123,6 +125,14 @@ public class ProjectListFragment extends Fragment implements RecyclerViewItemCli
 
         if (!created && userId != null) {
             created = true;
+
+            swipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshLayout.setRefreshing(true);
+                }
+            });
+
             loadProjectList();
         }
     }
@@ -169,30 +179,50 @@ public class ProjectListFragment extends Fragment implements RecyclerViewItemCli
 
     @Override
     public void onRefresh() {
-
+        clearAll = true;
+        loadProjectList();
     }
 
     private void loadProjectList() {
-        swipeRefreshLayout.setRefreshing(true);
+        if (loading) return;
+        loading = true;
 
         api.getProjectList(userId).enqueue(new Callback<ProjectList>() {
             @Override
             public void onResponse(Response<ProjectList> response) {
                 if (!response.isSuccess()) {
-                    showErrorDialog();
+                    handleLoadFailed();
                     return;
                 }
 
-                projectList.addAll(response.body().getData());
-                adapter.notifyDataSetChanged();
+                handleLoadSuccess(response);
             }
 
             @Override
             public void onFailure(Throwable t) {
                 Logger.e(t, "Project list load failed");
-                showErrorDialog();
+                handleLoadFailed();
             }
         });
+    }
+
+    private void handleLoadSuccess(Response<ProjectList> response){
+        if (clearAll) {
+            clearAll = false;
+            projectList.clear();
+        }
+
+        projectList.addAll(response.body().getData());
+        adapter.notifyDataSetChanged();
+        swipeRefreshLayout.setRefreshing(false);
+        loading = false;
+    }
+
+    private void handleLoadFailed(){
+        swipeRefreshLayout.setRefreshing(false);
+        loading = false;
+        clearAll = false;
+        showErrorDialog();
     }
 
     private void showErrorDialog() {
@@ -229,14 +259,16 @@ public class ProjectListFragment extends Fragment implements RecyclerViewItemCli
     private void logout() {
         final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.logging_out), true, false);
 
-        api.deleteToken(tokenHelper.getToken()).enqueue(new Callback<Void>() {
+        UUID token = tokenHelper.getToken();
+
+        api.deleteToken(token).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Response<Void> response) {
                 progressDialog.hide();
                 tokenHelper.removeCurrentAccount();
 
                 Intent intent = new Intent(getActivity(), EntryActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
 

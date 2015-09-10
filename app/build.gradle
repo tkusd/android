@@ -44,6 +44,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.0.1'
     compile 'com.android.support:design:23.0.1'
     compile 'com.android.support:preference-v7:23.0.1'
+    compile 'com.android.support:preference-v14:23.0.1'
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.squareup.retrofit:retrofit:2.0.0-beta1'
     compile 'org.xwalk:xwalk_core_library:14.43.343.23'

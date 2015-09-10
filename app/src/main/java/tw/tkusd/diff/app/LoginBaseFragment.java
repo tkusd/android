@@ -1,7 +1,5 @@
 package tw.tkusd.diff.app;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -24,7 +22,6 @@ import retrofit.Response;
 import tw.tkusd.diff.R;
 import tw.tkusd.diff.api.API;
 import tw.tkusd.diff.api.APIService;
-import tw.tkusd.diff.auth.Authenticator;
 import tw.tkusd.diff.event.LoginEvent;
 import tw.tkusd.diff.model.Token;
 import tw.tkusd.diff.model.TokenRequest;

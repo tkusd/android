@@ -42,6 +42,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.update:
+                updateUser();
+                break;
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateUser(){
+        //
     }
 }

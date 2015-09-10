@@ -6,10 +6,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Email;
@@ -25,7 +28,6 @@ import retrofit.Response;
 import tw.tkusd.diff.R;
 import tw.tkusd.diff.api.API;
 import tw.tkusd.diff.model.APIError;
-import tw.tkusd.diff.model.Token;
 import tw.tkusd.diff.model.User;
 
 /**
@@ -78,6 +80,18 @@ public class SignupFragment extends LoginBaseFragment {
         editTextMap.put(nameText, nameLayout);
         editTextMap.put(emailText, emailLayout);
         editTextMap.put(passwordText, passwordLayout);
+
+        passwordText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) || actionId == EditorInfo.IME_ACTION_DONE){
+                    signup();
+                    return true;
+                }
+
+                return false;
+            }
+        });
 
         return view;
     }

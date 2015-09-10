@@ -1,23 +1,9 @@
 package tw.tkusd.diff.app;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
-import com.orhanobut.logger.Logger;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import de.greenrobot.event.EventBus;
-import tw.tkusd.diff.R;
-import tw.tkusd.diff.event.LoginEvent;
 import tw.tkusd.diff.util.TokenHelper;
 
 /**
@@ -36,7 +22,6 @@ public class EntryActivity extends AppCompatActivity {
             startMainActivity();
         } else {
             Intent intent = new Intent(this, AuthenticatorActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivityForResult(intent, AUTH_RESULT);
         }
     }
@@ -50,7 +35,6 @@ public class EntryActivity extends AppCompatActivity {
 
     private void startMainActivity(){
         Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }
 }

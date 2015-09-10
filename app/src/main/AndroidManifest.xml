@@ -24,10 +24,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".app.MainActivity"/>
+        <activity android:name=".app.MainActivity"
+            android:launchMode="singleTop"/>
 
         <activity android:name=".app.AuthenticatorActivity"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan"
+            android:launchMode="singleTop"/>
 
         <service android:name=".auth.AuthenticatorService">
             <intent-filter>
