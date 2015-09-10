@@ -5,3 +5,5 @@
 -keep public class * extends android.support.v4.view.ActionProvider {
     public <init>(android.content.Context);
 }
+
+-keep public class * extends android.support.v7.preference.Preference

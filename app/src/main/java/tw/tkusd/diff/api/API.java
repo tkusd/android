@@ -30,7 +30,7 @@ public class API {
     private final Context context;
     private final APIService service;
 
-    private API(Context context){
+    private API(Context context) {
         this.context = context;
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -43,28 +43,28 @@ public class API {
         this.service = retrofit.create(APIService.class);
     }
 
-    public static API getInstance(Context context){
-        if (instance == null){
+    public static API getInstance(Context context) {
+        if (instance == null) {
             instance = new API(context.getApplicationContext());
         }
 
         return instance;
     }
 
-    public APIService getService(){
+    public APIService getService() {
         return service;
     }
 
-    public Gson getGson(){
+    public Gson getGson() {
         return gson;
     }
 
-    public static APIError parseAPIError(ResponseBody body){
+    public static APIError parseAPIError(ResponseBody body) {
         if (body == null) return null;
 
         try {
             return gson.fromJson(body.string(), APIError.class);
-        } catch (IOException e){
+        } catch (IOException e) {
             return null;
         }
     }

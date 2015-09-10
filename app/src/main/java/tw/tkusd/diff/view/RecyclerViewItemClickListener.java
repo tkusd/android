@@ -19,7 +19,7 @@ public class RecyclerViewItemClickListener implements RecyclerView.OnItemTouchLi
     private View childView;
     private int childViewPosition;
 
-    public RecyclerViewItemClickListener(Context context, OnItemClickListener listener){
+    public RecyclerViewItemClickListener(Context context, OnItemClickListener listener) {
         mListener = listener;
         mGestureDetector = new GestureDetector(context, new GestureListener());
     }
@@ -44,6 +44,7 @@ public class RecyclerViewItemClickListener implements RecyclerView.OnItemTouchLi
 
     public static interface OnItemClickListener {
         public void onItemClick(View childView, int position);
+
         public void onItemLongPress(View childView, int position);
     }
 

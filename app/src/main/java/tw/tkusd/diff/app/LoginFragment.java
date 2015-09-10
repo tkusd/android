@@ -3,6 +3,7 @@ package tw.tkusd.diff.app;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,22 +17,19 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 import retrofit.Callback;
 import retrofit.Response;
 import tw.tkusd.diff.R;
 import tw.tkusd.diff.api.API;
-import tw.tkusd.diff.api.APIService;
+import tw.tkusd.diff.event.LoginEvent;
 import tw.tkusd.diff.model.APIError;
 import tw.tkusd.diff.model.Token;
-import tw.tkusd.diff.util.TokenHelper;
 
 /**
  * Created by SkyArrow on 2015/9/9.
  */
 public class LoginFragment extends LoginBaseFragment {
-    private APIService api;
-    private TokenHelper tokenHelper;
-
     @InjectView(R.id.email_layout)
     TextInputLayout emailLayout;
 
@@ -48,7 +46,7 @@ public class LoginFragment extends LoginBaseFragment {
     @InjectView(R.id.password)
     EditText passwordText;
 
-    public static LoginFragment newInstance(){
+    public static LoginFragment newInstance() {
         return new LoginFragment();
     }
 
@@ -56,8 +54,6 @@ public class LoginFragment extends LoginBaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        api = API.getInstance(getActivity()).getService();
-        tokenHelper = TokenHelper.getInstance(getActivity());
     }
 
     @Nullable
@@ -74,35 +70,42 @@ public class LoginFragment extends LoginBaseFragment {
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
     @OnClick(R.id.login)
-    void loginPressed(){
+    void loginPressed() {
         resetTextInputLayouts();
         validator.validate();
 
         if (!isValidated()) return;
 
-        login(emailText.getText().toString(), passwordText.getText().toString(), new Callback<Token>() {
-            @Override
-            public void onResponse(Response<Token> response) {
-                if (response.isSuccess()) return;
+        login(emailText.getText().toString(), passwordText.getText().toString());
+    }
 
-                APIError error = API.parseAPIError(response.errorBody());
-                if (error == null) return;
+    public void onEvent(LoginEvent event){
+        Response<Token> res = event.getResponse();
+        if (res == null || res.isSuccess()) return;
 
-                String field = error.getField();
-                String msg = error.getMessage();
+        APIError err = API.parseAPIError(res.errorBody());
+        if (err == null) return;
 
-                if (field.equals("email")){
-                    emailLayout.setError(msg);
-                } else if (field.equals("password")){
-                    passwordLayout.setError(msg);
-                }
-            }
+        String field = err.getField();
+        String msg = err.getMessage();
 
-            @Override
-            public void onFailure(Throwable t) {
-                //
-            }
-        });
+        if (TextUtils.equals(field, "email")) {
+            emailLayout.setError(msg);
+        } else if (TextUtils.equals(field, "password")) {
+            passwordLayout.setError(msg);
+        }
     }
 }

@@ -1,0 +1,13 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Profile">
+        <EditTextPreference android:title="Name"/>
+        <EditTextPreference android:title="Email"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Password">
+        <EditTextPreference android:title="Current password"/>
+        <EditTextPreference android:title="New password"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Delete account">
+        <Preference android:title="Delete account"/>
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -1,12 +1,12 @@
 package tw.tkusd.diff.app;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.EditText;
 
@@ -18,11 +18,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.greenrobot.event.EventBus;
 import retrofit.Callback;
 import retrofit.Response;
 import tw.tkusd.diff.R;
 import tw.tkusd.diff.api.API;
 import tw.tkusd.diff.api.APIService;
+import tw.tkusd.diff.auth.Authenticator;
+import tw.tkusd.diff.event.LoginEvent;
 import tw.tkusd.diff.model.Token;
 import tw.tkusd.diff.model.TokenRequest;
 import tw.tkusd.diff.util.TokenHelper;
@@ -41,6 +44,7 @@ public abstract class LoginBaseFragment extends Fragment implements Validator.Va
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
         editTextMap = new HashMap<>();
         api = API.getInstance(getActivity()).getService();
         tokenHelper = TokenHelper.getInstance(getActivity());
@@ -55,7 +59,7 @@ public abstract class LoginBaseFragment extends Fragment implements Validator.Va
     public void onValidationFailed(List<ValidationError> errors) {
         validated = false;
 
-        for (ValidationError err : errors){
+        for (ValidationError err : errors) {
             View view = err.getView();
             if (view == null || !(view instanceof EditText)) continue;
 
@@ -66,36 +70,23 @@ public abstract class LoginBaseFragment extends Fragment implements Validator.Va
         }
     }
 
-    protected boolean isValidated(){
+    protected boolean isValidated() {
         return validated;
     }
 
-    protected void resetTextInputLayouts(){
-        for (TextInputLayout layout : editTextMap.values()){
+    protected void resetTextInputLayouts() {
+        for (TextInputLayout layout : editTextMap.values()) {
             layout.setError(null);
         }
     }
 
-    protected void transitionToProjectList(){
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        ft.replace(R.id.frame, ProjectListFragment.newInstance(tokenHelper.getUserId()));
-        ft.commit();
-    }
-
-    protected APIService getAPI(){
+    protected APIService getAPI() {
         return api;
     }
 
-    protected TokenHelper getTokenHelper(){
-        return tokenHelper;
-    }
-
-    protected void login(String email, String password, final Callback<Token> callback){
-        final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), null, "Logging in...", true, false);
-        TokenRequest req = new TokenRequest(email, password);
+    protected void login(final String email, String password) {
+        final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.logging_in), true, false);
+        final TokenRequest req = new TokenRequest(email, password);
 
         api.createToken(req).enqueue(new Callback<Token>() {
             @Override
@@ -104,12 +95,12 @@ public abstract class LoginBaseFragment extends Fragment implements Validator.Va
 
                 if (!response.isSuccess()) {
                     showLoginErrorDialog();
-                    callback.onResponse(response);
+                    EventBus.getDefault().post(new LoginEvent(req, response));
                     return;
                 }
 
-                tokenHelper.setToken(response.body());
-                transitionToProjectList();
+                tokenHelper.setAccount(email, response.body());
+                EventBus.getDefault().post(new LoginEvent(req, response));
             }
 
             @Override
@@ -117,14 +108,14 @@ public abstract class LoginBaseFragment extends Fragment implements Validator.Va
                 Logger.e(t, "Login failed");
                 progressDialog.hide();
                 showLoginErrorDialog();
-                callback.onFailure(t);
+                EventBus.getDefault().post(new LoginEvent(t));
             }
         });
     }
 
-    private void showLoginErrorDialog(){
+    private void showLoginErrorDialog() {
         new AlertDialog.Builder(getActivity())
-                .setMessage("Login failed")
+                .setMessage(getString(R.string.login_failed))
                 .setPositiveButton(R.string.ok, null)
                 .show();
     }

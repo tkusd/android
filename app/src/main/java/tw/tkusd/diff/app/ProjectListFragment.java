@@ -3,6 +3,7 @@ package tw.tkusd.diff.app;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -51,9 +51,7 @@ public class ProjectListFragment extends Fragment implements RecyclerViewItemCli
     private APIService api;
     private UUID userId;
     private TokenHelper tokenHelper;
-
-    @InjectView(R.id.toolbar)
-    Toolbar toolbar;
+    private boolean created;
 
     @InjectView(R.id.list)
     RecyclerView recyclerView;
@@ -61,7 +59,7 @@ public class ProjectListFragment extends Fragment implements RecyclerViewItemCli
     @InjectView(R.id.container)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    public static ProjectListFragment newInstance(UUID userId){
+    public static ProjectListFragment newInstance(UUID userId) {
         ProjectListFragment fragment = new ProjectListFragment();
         Bundle args = new Bundle();
 
@@ -82,7 +80,7 @@ public class ProjectListFragment extends Fragment implements RecyclerViewItemCli
         api = API.getInstance(getActivity()).getService();
         tokenHelper = TokenHelper.getInstance(getActivity());
 
-        if (userId == null){
+        if (userId == null) {
             new AlertDialog.Builder(getActivity())
                     .setMessage("User ID is invalid")
                     .setCancelable(false)
@@ -100,9 +98,9 @@ public class ProjectListFragment extends Fragment implements RecyclerViewItemCli
         ButterKnife.inject(this, view);
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(toolbar);
         ActionBar actionBar = activity.getSupportActionBar();
         actionBar.setTitle(getString(R.string.projects));
+        actionBar.setDisplayHomeAsUpEnabled(false);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(activity);
         adapter = new ProjectListAdapter(activity, projectList);
@@ -123,7 +121,8 @@ public class ProjectListFragment extends Fragment implements RecyclerViewItemCli
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (savedInstanceState == null && userId != null){
+        if (!created && userId != null) {
+            created = true;
             loadProjectList();
         }
     }
@@ -136,12 +135,13 @@ public class ProjectListFragment extends Fragment implements RecyclerViewItemCli
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.settings:
+                showSettings();
                 return true;
 
             case R.id.logout:
-                logout();
+                showLogoutConfirmDialog();
                 return true;
         }
 
@@ -156,7 +156,7 @@ public class ProjectListFragment extends Fragment implements RecyclerViewItemCli
         FragmentManager fm = getActivity().getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        ft.add(R.id.frame, ProjectPreviewFragment.newInstance(project.getId()));
+        ft.replace(R.id.frame, ProjectPreviewFragment.newInstance(project.getId()));
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.addToBackStack(null);
         ft.commit();
@@ -172,13 +172,13 @@ public class ProjectListFragment extends Fragment implements RecyclerViewItemCli
 
     }
 
-    private void loadProjectList(){
+    private void loadProjectList() {
         swipeRefreshLayout.setRefreshing(true);
 
         api.getProjectList(userId).enqueue(new Callback<ProjectList>() {
             @Override
             public void onResponse(Response<ProjectList> response) {
-                if (!response.isSuccess()){
+                if (!response.isSuccess()) {
                     showErrorDialog();
                     return;
                 }
@@ -195,18 +195,27 @@ public class ProjectListFragment extends Fragment implements RecyclerViewItemCli
         });
     }
 
-    private void showErrorDialog(){
+    private void showErrorDialog() {
         new AlertDialog.Builder(getActivity())
-                .setMessage("Project list load failed")
+                .setMessage(getString(R.string.project_list_load_failed))
                 .setPositiveButton(R.string.ok, null)
-                .setNegativeButton(R.string.cancel, null)
                 .show();
     }
 
-    private void showLogoutConfirmDialog(){
+    private void showSettings() {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ft.replace(R.id.frame, SettingsFragment.newInstance());
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+
+    private void showLogoutConfirmDialog() {
         new AlertDialog.Builder(getActivity())
-                .setTitle("Log out")
-                .setMessage("Are you sure?")
+                .setTitle(getString(R.string.logout))
+                .setMessage(getString(R.string.are_you_sure))
                 .setPositiveButton(R.string.ok, new AlertDialog.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -217,19 +226,18 @@ public class ProjectListFragment extends Fragment implements RecyclerViewItemCli
                 .show();
     }
 
-    private void logout(){
-        final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), null, "Logging out...", true, false);
+    private void logout() {
+        final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.logging_out), true, false);
 
         api.deleteToken(tokenHelper.getToken()).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Response<Void> response) {
                 progressDialog.hide();
+                tokenHelper.removeCurrentAccount();
 
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-
-                ft.replace(R.id.frame, LoginPagerFragment.newInstance());
-                ft.commit();
+                Intent intent = new Intent(getActivity(), EntryActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
             }
 
             @Override
@@ -241,9 +249,9 @@ public class ProjectListFragment extends Fragment implements RecyclerViewItemCli
         });
     }
 
-    private void showLogoutErrorDialog(){
+    private void showLogoutErrorDialog() {
         new AlertDialog.Builder(getActivity())
-                .setMessage("Logout failed")
+                .setMessage(getString(R.string.logout_failed))
                 .setPositiveButton(R.string.ok, null)
                 .show();
     }

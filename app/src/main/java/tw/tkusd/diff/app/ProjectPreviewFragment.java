@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,13 +31,10 @@ public class ProjectPreviewFragment extends Fragment {
 
     private UUID projectId;
 
-    @InjectView(R.id.toolbar)
-    Toolbar toolbar;
-
     @InjectView(R.id.web)
     XWalkView webView;
 
-    public static ProjectPreviewFragment newInstance(UUID projectId){
+    public static ProjectPreviewFragment newInstance(UUID projectId) {
         ProjectPreviewFragment fragment = new ProjectPreviewFragment();
         Bundle args = new Bundle();
 
@@ -64,16 +60,13 @@ public class ProjectPreviewFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_preview, container, false);
         ButterKnife.inject(this, view);
 
-        if (projectId != null){
+        if (projectId != null) {
             webView.load(String.format(Constant.PREVIEW_URL, projectId.toString()), null);
         }
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(toolbar);
-
         ActionBar actionBar = activity.getSupportActionBar();
         actionBar.setTitle(getString(R.string.preview));
-        actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         return view;
@@ -85,7 +78,7 @@ public class ProjectPreviewFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 fm.popBackStack();

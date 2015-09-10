@@ -15,11 +15,9 @@ import tw.tkusd.diff.util.TokenHelper;
  * Created by SkyArrow on 2015/9/9.
  */
 public class TokenInterceptor implements Interceptor {
-    private final Context context;
     private final TokenHelper tokenHelper;
 
     public TokenInterceptor(Context context) {
-        this.context = context;
         this.tokenHelper = TokenHelper.getInstance(context);
     }
 
@@ -28,7 +26,7 @@ public class TokenInterceptor implements Interceptor {
         Request request = chain.request();
         UUID token = tokenHelper.getToken();
 
-        if (token != null){
+        if (token != null) {
             request = request.newBuilder()
                     .addHeader("Authorization", "Bearer " + token.toString())
                     .build();

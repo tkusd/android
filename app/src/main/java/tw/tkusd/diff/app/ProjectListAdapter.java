@@ -21,7 +21,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     private Context context;
     private List<Project> list;
 
-    public ProjectListAdapter(Context context, List<Project> projectList){
+    public ProjectListAdapter(Context context, List<Project> projectList) {
         this.context = context;
         this.list = projectList;
     }
@@ -54,7 +54,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         @InjectView(R.id.title)
         TextView title;
 
-        public ViewHolder(View view){
+        public ViewHolder(View view) {
             super(view);
             ButterKnife.inject(this, view);
         }

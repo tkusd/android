@@ -22,6 +22,7 @@ android {
             proguardFile 'proguard-saripaar.pro'
             proguardFile 'proguard-retrofit.pro'
             proguardFile 'proguard-crosswalk.pro'
+            proguardFile 'proguard-eventbus.pro'
 
             // Default proguard files
             proguardFile 'proguard-project.pro'
@@ -42,6 +43,7 @@ dependencies {
     compile 'com.android.support:cardview-v7:23.0.1'
     compile 'com.android.support:recyclerview-v7:23.0.1'
     compile 'com.android.support:design:23.0.1'
+    compile 'com.android.support:preference-v7:23.0.1'
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.squareup.retrofit:retrofit:2.0.0-beta1'
     compile 'org.xwalk:xwalk_core_library:14.43.343.23'
@@ -50,4 +52,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.squareup.retrofit:converter-gson:2.0.0-beta1'
     compile 'com.orhanobut:logger:1.11'
+    compile 'de.greenrobot:eventbus:2.4.0'
 }

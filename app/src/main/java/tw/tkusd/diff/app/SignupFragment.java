@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +56,7 @@ public class SignupFragment extends LoginBaseFragment {
     @InjectView(R.id.password)
     EditText passwordText;
 
-    public static SignupFragment newInstance(){
+    public static SignupFragment newInstance() {
         return new SignupFragment();
     }
 
@@ -82,13 +83,13 @@ public class SignupFragment extends LoginBaseFragment {
     }
 
     @OnClick(R.id.signup)
-    void signup(){
+    void signup() {
         resetTextInputLayouts();
         validator.validate();
 
         if (!isValidated()) return;
 
-        final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), null, "Signing up...", true, false);
+        final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.signing_up), true, false);
         final User user = new User();
 
         user.setName(nameText.getText().toString());
@@ -100,18 +101,18 @@ public class SignupFragment extends LoginBaseFragment {
             public void onResponse(Response<User> response) {
                 progressDialog.hide();
 
-                if (!response.isSuccess()){
+                if (!response.isSuccess()) {
                     APIError error = API.parseAPIError(response.errorBody());
 
-                    if (error != null){
+                    if (error != null) {
                         String field = error.getField();
                         String msg = error.getMessage();
 
-                        if (field.equals("name")){
+                        if (TextUtils.equals(field, "name")) {
                             nameLayout.setError(msg);
-                        } else if (field.equals("email")){
+                        } else if (TextUtils.equals(field, "email")) {
                             emailLayout.setError(msg);
-                        } else if (field.equals("password")){
+                        } else if (TextUtils.equals(field, "password")) {
                             passwordLayout.setError(msg);
                         } else {
                             showErrorDialog();
@@ -123,17 +124,7 @@ public class SignupFragment extends LoginBaseFragment {
                     return;
                 }
 
-                login(user.getEmail(), user.getPassword(), new Callback<Token>() {
-                    @Override
-                    public void onResponse(Response<Token> response) {
-                        //
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        //
-                    }
-                });
+                login(user.getEmail(), user.getPassword());
             }
 
             @Override
@@ -145,9 +136,9 @@ public class SignupFragment extends LoginBaseFragment {
         });
     }
 
-    private void showErrorDialog(){
+    private void showErrorDialog() {
         new AlertDialog.Builder(getActivity())
-                .setMessage("Signup failed")
+                .setMessage(getString(R.string.signup_failed))
                 .setPositiveButton(R.string.ok, null)
                 .show();
     }

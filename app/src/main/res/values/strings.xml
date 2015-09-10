@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Diff</string>
 
+    <string name="account_type">tw.tkusd.diff</string>
+
     <string name="name">Name</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -13,4 +15,12 @@
     <string name="logout">Log out</string>
     <string name="projects">Projects</string>
     <string name="preview">Preview</string>
+    <string name="logging_in">Logging in&#8230;</string>
+    <string name="signing_up">Signing up&#8230;</string>
+    <string name="login_failed">Log in failed</string>
+    <string name="signup_failed">Sign up failed</string>
+    <string name="project_list_load_failed">Project list load failed</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="logging_out">Logging out&#8230;</string>
+    <string name="logout_failed">Log out failed</string>
 </resources>
