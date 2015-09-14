@@ -146,8 +146,8 @@ public class ProjectListFragment extends Fragment implements RecyclerViewItemCli
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.settings:
-                showSettings();
+            case R.id.edit_profile:
+                showProfileEditFragment();
                 return true;
 
             case R.id.logout:
@@ -232,12 +232,12 @@ public class ProjectListFragment extends Fragment implements RecyclerViewItemCli
                 .show();
     }
 
-    private void showSettings() {
+    private void showProfileEditFragment() {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        ft.replace(R.id.frame, SettingsFragment.newInstance());
+        ft.replace(R.id.frame, ProfileEditFragment.newInstance());
         ft.addToBackStack(null);
         ft.commit();
     }

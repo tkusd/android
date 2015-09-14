@@ -30,10 +30,7 @@ import tw.tkusd.diff.util.TokenHelper;
 /**
  * Created by SkyArrow on 2015/9/9.
  */
-public abstract class LoginBaseFragment extends Fragment implements Validator.ValidationListener {
-    protected Validator validator;
-    protected Map<EditText, TextInputLayout> editTextMap;
-    private boolean validated;
+public abstract class LoginBaseFragment extends ValidatorFragment {
     private APIService api;
     private TokenHelper tokenHelper;
 
@@ -42,39 +39,8 @@ public abstract class LoginBaseFragment extends Fragment implements Validator.Va
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
-        editTextMap = new HashMap<>();
         api = API.getInstance(getActivity()).getService();
         tokenHelper = TokenHelper.getInstance(getActivity());
-    }
-
-    @Override
-    public void onValidationSucceeded() {
-        validated = true;
-    }
-
-    @Override
-    public void onValidationFailed(List<ValidationError> errors) {
-        validated = false;
-
-        for (ValidationError err : errors) {
-            View view = err.getView();
-            if (view == null || !(view instanceof EditText)) continue;
-
-            EditText editText = (EditText) view;
-            if (!editTextMap.containsKey(editText)) continue;
-
-            editTextMap.get(editText).setError(err.getCollatedErrorMessage(getActivity()));
-        }
-    }
-
-    protected boolean isValidated() {
-        return validated;
-    }
-
-    protected void resetTextInputLayouts() {
-        for (TextInputLayout layout : editTextMap.values()) {
-            layout.setError(null);
-        }
     }
 
     protected APIService getAPI() {

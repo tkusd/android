@@ -16,6 +16,7 @@ import tw.tkusd.diff.app.AuthenticatorActivity;
  * Created by SkyArrow on 2015/9/10.
  */
 public class Authenticator extends AbstractAccountAuthenticator {
+    public static final String TOKEN_ID = "token_id";
     public static final String USER_ID = "user_id";
     public static final String TYPE_TOKEN = "token";
 

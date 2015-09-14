@@ -62,12 +62,6 @@ public class SignupFragment extends LoginBaseFragment {
         return new SignupFragment();
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -77,9 +71,9 @@ public class SignupFragment extends LoginBaseFragment {
         validator = new Validator(this);
         validator.setValidationListener(this);
 
-        editTextMap.put(nameText, nameLayout);
-        editTextMap.put(emailText, emailLayout);
-        editTextMap.put(passwordText, passwordLayout);
+        addEditText(nameText, nameLayout);
+        addEditText(emailText, emailLayout);
+        addEditText(passwordText, passwordLayout);
 
         passwordText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -98,9 +92,7 @@ public class SignupFragment extends LoginBaseFragment {
 
     @OnClick(R.id.signup)
     void signup() {
-        resetTextInputLayouts();
-        validator.validate();
-
+        validate(true);
         if (!isValidated()) return;
 
         final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.signing_up), true, false);

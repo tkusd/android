@@ -58,7 +58,18 @@ public class TokenHelper {
     }
 
     public UUID getToken(Account account){
-        return parseUUID(accountManager.peekAuthToken(account, Authenticator.TYPE_TOKEN));
+        return parseUUID(accountManager.getUserData(account, Authenticator.TOKEN_ID));
+    }
+
+    public String getSecret() {
+        Account account = getCurrentAccount();
+        if (account == null) return null;
+
+        return getSecret(account);
+    }
+
+    public String getSecret(Account account){
+        return accountManager.peekAuthToken(account, Authenticator.TYPE_TOKEN);
     }
 
     public UUID getUserId() {
@@ -119,6 +130,7 @@ public class TokenHelper {
         Account account = new Account(email, accountType);
         Bundle bundle = new Bundle();
 
+        bundle.putString(Authenticator.TOKEN_ID, token.getId().toString());
         bundle.putString(Authenticator.USER_ID, token.getUserId().toString());
 
         // Add account if not exist
@@ -126,7 +138,7 @@ public class TokenHelper {
             accountManager.addAccountExplicitly(account, null, bundle);
         }
 
-        accountManager.setAuthToken(account, Authenticator.TYPE_TOKEN, token.getId().toString());
+        accountManager.setAuthToken(account, Authenticator.TYPE_TOKEN, token.getSecret());
     }
 
     public void removeAccount(Account account){

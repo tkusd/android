@@ -1,6 +1,7 @@
 package tw.tkusd.diff.api;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.Request;
@@ -24,11 +25,11 @@ public class TokenInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-        UUID token = tokenHelper.getToken();
+        String secret = tokenHelper.getSecret();
 
-        if (token != null) {
+        if (!TextUtils.isEmpty(secret)) {
             request = request.newBuilder()
-                    .addHeader("Authorization", "Bearer " + token.toString())
+                    .addHeader("Authorization", "Bearer " + secret)
                     .build();
         }
 

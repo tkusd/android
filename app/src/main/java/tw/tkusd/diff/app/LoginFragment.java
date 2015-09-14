@@ -1,8 +1,12 @@
 package tw.tkusd.diff.app;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -16,16 +20,19 @@ import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Email;
 import com.mobsandgeeks.saripaar.annotation.Length;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.orhanobut.logger.Logger;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
+import retrofit.Callback;
 import retrofit.Response;
 import tw.tkusd.diff.R;
 import tw.tkusd.diff.api.API;
 import tw.tkusd.diff.event.LoginEvent;
 import tw.tkusd.diff.model.APIError;
+import tw.tkusd.diff.model.ResetPasswordRequest;
 import tw.tkusd.diff.model.Token;
 
 /**
@@ -52,12 +59,6 @@ public class LoginFragment extends LoginBaseFragment {
         return new LoginFragment();
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,8 +67,8 @@ public class LoginFragment extends LoginBaseFragment {
         validator = new Validator(this);
         validator.setValidationListener(this);
 
-        editTextMap.put(emailText, emailLayout);
-        editTextMap.put(passwordText, passwordLayout);
+        addEditText(emailText, emailLayout);
+        addEditText(passwordText, passwordLayout);
 
         passwordText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -98,9 +99,7 @@ public class LoginFragment extends LoginBaseFragment {
 
     @OnClick(R.id.login)
     void loginPressed() {
-        resetTextInputLayouts();
-        validator.validate();
-
+        validate(true);
         if (!isValidated()) return;
 
         login(emailText.getText().toString(), passwordText.getText().toString());
@@ -121,5 +120,53 @@ public class LoginFragment extends LoginBaseFragment {
         } else if (TextUtils.equals(field, "password")) {
             passwordLayout.setError(msg);
         }
+    }
+
+    @OnClick(R.id.reset_password)
+    void showResetPasswordDialog(){
+        final EditText text = new EditText(getActivity());
+        text.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.reset_password)
+                .setMessage(R.string.reset_password_msg)
+                .setView(text)
+                .setPositiveButton(R.string.ok, new AlertDialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requestResetPassword(text.getText().toString());
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+    private void requestResetPassword(String email){
+        final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), null, getString(R.string.loading), true, false);
+
+        getAPI().resetPassword(new ResetPasswordRequest(email)).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Response<Void> response) {
+                progressDialog.hide();
+
+                if (!response.isSuccess()){
+                    showResetPasswordFailedDialog();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Logger.e(t, "Reset failed");
+                progressDialog.hide();
+                showResetPasswordFailedDialog();
+            }
+        });
+    }
+
+    private void showResetPasswordFailedDialog(){
+        new AlertDialog.Builder(getActivity())
+                .setMessage(R.string.reset_password_failed)
+                .setPositiveButton(R.string.ok, null)
+                .show();
     }
 }

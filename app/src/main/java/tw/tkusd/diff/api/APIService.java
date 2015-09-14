@@ -11,6 +11,7 @@ import retrofit.http.PUT;
 import retrofit.http.Path;
 import tw.tkusd.diff.model.Project;
 import tw.tkusd.diff.model.ProjectList;
+import tw.tkusd.diff.model.ResetPasswordRequest;
 import tw.tkusd.diff.model.Token;
 import tw.tkusd.diff.model.TokenRequest;
 import tw.tkusd.diff.model.User;
@@ -30,7 +31,7 @@ public interface APIService {
     Call<User> updateUser(@Path("id") UUID userId, @Body User body);
 
     @DELETE("users/{id}")
-    Call deleteUser(@Path("id") UUID userId);
+    Call<Void> deleteUser(@Path("id") UUID userId);
 
     // Tokens
     @POST("tokens")
@@ -48,4 +49,8 @@ public interface APIService {
 
     @GET("projects/{id}")
     Call<Project> getProject(@Path("id") UUID projectId);
+
+    // Password
+    @POST("passwords/reset")
+    Call<Void> resetPassword(@Body ResetPasswordRequest body);
 }

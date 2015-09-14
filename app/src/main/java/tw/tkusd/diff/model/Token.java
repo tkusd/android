@@ -7,6 +7,7 @@ import java.util.UUID;
  */
 public class Token extends BaseModel {
     private UUID userId;
+    private String secret;
 
     public UUID getUserId() {
         return userId;
@@ -14,5 +15,13 @@ public class Token extends BaseModel {
 
     public void setUserId(UUID userId) {
         this.userId = userId;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 }

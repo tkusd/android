@@ -8,6 +8,7 @@
         <item name="selectableItemBackground">?android:attr/selectableItemBackground</item>
         <item name="selectableItemBackgroundBorderless">?android:attr/selectableItemBackgroundBorderless</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="android:activatedBackgroundIndicator">?android:attr/selectableItemBackground</item>
     </style>
 
     <style name="AppTheme" parent="AppBaseTheme"/>
